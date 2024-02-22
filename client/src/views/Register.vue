@@ -11,7 +11,7 @@
         <form class="space-y-6" @submit="onSubmit">
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">
-              Email address for good
+              Email address
             </label>
             <div class="mt-1">
               <input
@@ -26,6 +26,26 @@
             </div>
             <p class="my-2 text-red-800">
               {{ errors.email }}
+            </p>
+          </div>
+
+          <div>
+            <label for="username" class="block text-sm font-medium text-gray-700">
+              Your Username
+            </label>
+            <div class="mt-1">
+              <input
+                id="username"
+                v-bind="usernameAttributes"
+                v-model="username"
+                name="username"
+                type="text"
+                placeholder="Enter Username"
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <p class="my-2 text-red-800">
+              {{ errors.username }}
             </p>
           </div>
 
@@ -64,12 +84,12 @@
 
           <div>
             <p class="mt-2 text-center text-sm text-gray-600">
-              Don't have an account?
+              Already have an account?
               <router-link
-                to="/register"
+                to="/login"
                 class="font-medium text-indigo-600 hover:text-indigo-500"
               >
-                Register
+                Login
               </router-link>
             </p>
           </div>
@@ -106,11 +126,17 @@ function passwordRequired(value) {
 const { defineField, handleSubmit, errors } = useForm({
   validationSchema: {
     email: required,
+    username: required,
     password: passwordRequired,
   },
 });
 
 // Define fields
+const [username, usernameAttributes] = defineField("username", {
+  type: "text", // Initial type
+  name: "username", // Initial name
+});
+
 const [email, emailAttributes] = defineField("email", {
   type: "email", // Initial type
   name: "email", // Initial name
@@ -124,6 +150,6 @@ const [password, passwordAttributes] = defineField("password", {
 // Submit handler
 const onSubmit = handleSubmit(async (values) => {
   // Submit to API
-  await auth.loginAction(values);
+  await auth.registerAction(values);
 });
 </script>
