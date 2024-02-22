@@ -55,7 +55,6 @@
             </div>
         </div>
     </div>
-    <FooterComponent />
 </template>
 
 <script setup>
@@ -63,7 +62,6 @@ import { computed } from 'vue';
 import { useAuth } from '../store/auth';
 import { useForm } from 'vee-validate';
 import router from '../routes/index';
-import FooterComponent from '../components/FooterComponent.vue';
 
 const auth = useAuth();
 const authData = computed(() => auth.getAuthData);
