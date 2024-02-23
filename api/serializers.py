@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from users.models import CustomUser
+from groups.models import Group
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -56,3 +57,29 @@ class ListCustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
+
+class CreateGroupSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Group
+        read_only_fields = ('created_by', 'moderator', 'created_at', 'updated_at')
+        fields = ('name', 'description', 'created_by', 'moderator', 'created_at', 'updated_at')
+
+    
+    def create(self, validated_data):
+        group = super(CreateGroupSerializer, self).create(validated_data)
+        group.moderator.add(group.created_by)
+        group.save()
+        return group
+    
+    def update(self, instance, validated_data):
+        group = super(CreateGroupSerializer, self).update(instance, validated_data)
+        group.save()
+        return group

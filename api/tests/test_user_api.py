@@ -34,10 +34,12 @@ class PublicUserApiTests(TestCase):
             'role': 'Moderator'
         }
         res = self.client.post(CREATE_USER_URL, payload)
-        # print('Res after test case ', res.data)
+  
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         user = get_user_model().objects.get(email=payload['email'])
         self.assertTrue(user.check_password(payload['password']))
+        self.assertTrue(user.role, payload['role'])
+        self.assertTrue(user.username, payload['username'])
         self.assertNotIn('password', res.data)
 
     
