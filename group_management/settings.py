@@ -61,7 +61,8 @@ INSTALLED_APPS = [
 
     'api',
     'users',
-    'groups'
+    'groups',
+    'items'
 ]
 
 MIDDLEWARE = [

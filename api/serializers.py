@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from users.models import CustomUser
 from groups.models import Group
+from items.models import Category, Supplier
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -84,3 +85,54 @@ class CreateGroupSerializer(serializers.ModelSerializer):
         group = super(CreateGroupSerializer, self).update(instance, validated_data)
         group.save()
         return group
+    
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
+
+class CreateCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        read_only_fields = ('created_by', 'created_at', 'updated_at')
+        fields = ('name', 'created_by', 'created_at', 'updated_at')
+
+    
+    def create(self, validated_data):
+        category = super(CreateCategorySerializer, self).create(validated_data)
+        category.save()
+        return category
+    
+    def update(self, instance, validated_data):
+        category = super(CreateCategorySerializer, self).update(instance, validated_data)
+        category.save()
+        return category
+    
+
+class SupplierSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Supplier
+        fields = '__all__'
+
+
+class CreateSupplierSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Supplier
+        read_only_fields = ('created_at', 'updated_at')
+        fields = ('name', 'created_at', 'updated_at')
+
+        
+        def create(self, validated_data):
+            supplier = super(CreateSupplierSerializer, self).create(validated_data)
+            supplier.save()
+            return supplier
+        
+        def update(self, instance, validated_data):
+            supplier = super(CreateSupplierSerializer, self).update(instance, validated_data)
+            supplier.save()
+            return supplier
