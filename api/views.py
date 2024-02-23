@@ -130,19 +130,19 @@ class RetrieveUpdateDestroyCategoryApiView(RetrieveUpdateDestroyAPIView):
 class ListSuppliersApiView(ListAPIView):
     serializer_class = SupplierSerializer
     queryset = Supplier.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
 
 class CreateSupplierApiView(CreateAPIView):
     serializer_class = CreateSupplierSerializer
     queryset = Supplier.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
 
 class RetrieveUpdateDestroySupplierApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = SupplierSerializer
     queryset = Supplier.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     def get(self, request, *args, **kwargs):
         supplier = self.get_object()

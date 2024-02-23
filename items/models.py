@@ -38,6 +38,3 @@ class Supplier(models.Model):
     class Meta:
         verbose_name = 'Supplier'
         verbose_name_plural = 'Suppliers'
-
-
-    
