@@ -10,6 +10,7 @@ from rest_framework import status
 from api.serializers import CustomUserSerializer
 
 CREATE_USER_URL = reverse('api:signup')
+DETAIL_USER_URL = reverse('api:user-detail', args=[1])
 TOKEN_URL = reverse('api:signin')
 USERS_URL = reverse('api:list-users')
 
@@ -34,12 +35,10 @@ class PublicUserApiTests(TestCase):
             'role': 'Moderator'
         }
         res = self.client.post(CREATE_USER_URL, payload)
-  
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         user = get_user_model().objects.get(email=payload['email'])
         self.assertTrue(user.check_password(payload['password']))
         self.assertTrue(user.role, payload['role'])
-        self.assertTrue(user.username, payload['username'])
         self.assertNotIn('password', res.data)
 
     
@@ -124,3 +123,25 @@ class PublicUserApiTests(TestCase):
         self.assertNotIn('access', res.data)
         self.assertNotIn('refresh', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    
+    def test_retrieve_user_unauthorized(self):
+        """Test authentication is required for users."""
+        res = self.client.get(DETAIL_USER_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+
+class PrivateGroupApiTests(TestCase):
+    """Test authenticated API requests."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_user(email='user@example.com', password='test123', username='Test Name', is_staff=True, is_superuser=True)
+        self.client.force_authenticate(self.user)
+
+    
+
+
+    

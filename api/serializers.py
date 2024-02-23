@@ -18,6 +18,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['email'] = self.user.email
         data['id'] = self.user.id
         data['is_admin'] = self.user.is_superuser
+        data['role'] = self.user.role
         return data
 
 
@@ -34,7 +35,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'id', 'is_staff', 'password', 'access', 'refresh',)
+        fields = ('username', 'email', 'id', 'is_staff', 'password', 'access', 'refresh', 'role')
     
     def get_refresh(self, user):
         refresh = RefreshToken.for_user(user)
