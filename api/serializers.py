@@ -35,7 +35,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'id', 'is_staff', 'password', 'access', 'refresh', 'role')
+        fields = ('username', 'email', 'id', 'is_staff', 'password', 'access', 'refresh', 'role', 'is_superuser',)
     
     def get_refresh(self, user):
         refresh = RefreshToken.for_user(user)

@@ -11,6 +11,16 @@ const authGuard = (to, from, next) => {
     }
 }
 
+const adminAuthGuard = (to, from, next) => {
+    const { getAuthData } = useAuth()
+    next()
+    if (getAuthData && getAuthData.is_admin) {
+        next()
+    } else {
+        next({ name: 'Home' })
+    }
+}
+
 const routes = [
     {
         path: '/',
@@ -21,6 +31,7 @@ const routes = [
     {
         path: '/admin',
         name: 'Admin',
+        beforeEnter: adminAuthGuard,
         children: [
             {
                 path: '',
