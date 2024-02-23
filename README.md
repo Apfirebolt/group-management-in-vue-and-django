@@ -73,23 +73,14 @@ Modifications in the config file for React using Vite.
 
 ```
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  base: 'static', 
+  plugins: [vue()],
+  base: '/', 
   server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-      },
-    },
-  },
-  resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      port: 8080,
   },
   build: {
     outDir: '../static/dist', // Output directory relative to Django's static directory
@@ -98,7 +89,7 @@ export default defineConfig({
     emptyOutDir: true, // Clean the output directory before building
     rollupOptions: {
       input: {
-        main: './src/main.jsx', // Entry point of your React app
+        main: './src/main.js', // Entry point of your Vue app
       },
     },
   },
