@@ -31,7 +31,7 @@ const routes = [
     {
         path: '/admin',
         name: 'Admin',
-        beforeEnter: adminAuthGuard,
+        // beforeEnter: adminAuthGuard,
         children: [
             {
                 path: '',
@@ -47,6 +47,11 @@ const routes = [
                 path: 'users',
                 name: 'AdminUsers',
                 component: () => import('../views/admin/AdminUser.vue')
+            },
+            {
+                path: 'suppliers',
+                name: 'AdminSuppliers',
+                component: () => import('../views/admin/AdminSupplier.vue')
             },
         ]
     },
