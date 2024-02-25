@@ -91,7 +91,7 @@
             <DialogPanel
               class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
-              <SupplierForm :addSupplierUtil="addSupplierUtil" :supplier="selectedSupplier" />
+              <SupplierForm :addSupplierUtil="addSupplierUtil" :updateSupplierUtil="updateSupplierUtil" :supplier="selectedSupplier" />
             </DialogPanel>
           </TransitionChild>
         </div>
@@ -113,7 +113,7 @@ import { onMounted, computed, ref } from "vue";
 import { useItem } from "../../store/item";
 
 const item = useItem();
-const isOpen = ref(true);
+const isOpen = ref(false);
 const selectedSupplier = ref(null);
 
 const setIsOpen = (value) => {
@@ -141,6 +141,12 @@ const openSupplierAddForm = () => {
 const addSupplierUtil = async (supplierData) => {
   closeModal();
   await item.addSupplier(supplierData);
+  await item.getSuppliersAction();
+};
+
+const updateSupplierUtil = async (supplierData) => {
+  closeModal();
+  await item.updateSupplier(supplierData);
   await item.getSuppliersAction();
 };
 

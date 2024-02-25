@@ -61,10 +61,24 @@ export const useUser = defineStore("user", {
           headers,
         });
         this.users = response.data;
-        console.log('User data', this.users[0].username);
       } catch (error) {
         console.log(error);
         return error
+      }
+    },
+
+    async updateUser(userData) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.put(`users/${userData.id}`, userData, {
+          headers,
+        });
+        toast.success("User role updated!");
+      } catch (error) {
+        console.log(error);
+        return error;
       }
     },
 

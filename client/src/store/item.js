@@ -42,6 +42,21 @@ export const useItem = defineStore("item", {
       }
     },
 
+    async updateSupplier(supplierData) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.put(`suppliers/${supplierData.id}`, supplierData, {
+          headers,
+        });
+        toast.success("Supplier updated!");
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
     async getSupplierAction(supplierId) {
       try {
         const response = await httpClient.get("supplier/" + supplierId);

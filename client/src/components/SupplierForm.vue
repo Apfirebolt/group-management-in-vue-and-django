@@ -39,6 +39,7 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
 import { useForm } from "vee-validate";
 
 const props = defineProps({
@@ -50,6 +51,16 @@ const props = defineProps({
         type: Function,
         required: true,
     },
+    updateSupplierUtil: {
+        type: Function,
+        required: true,
+    },
+});
+
+onMounted(() => {
+    if (props.supplier) {
+        name.value = props.supplier.name;
+    }
 });
 
 // Validation, or use `yup` or `zod`
@@ -72,6 +83,10 @@ const [name, nameAttributes] = defineField("name", {
 
 // Submit handler
 const onSubmit = handleSubmit(async (values) => {
+    if (props.supplier) {
+        await props.updateSupplierUtil({ ...values, id: props.supplier.id });
+        return;
+    }
     await props.addSupplierUtil(values);
 });
 </script>
