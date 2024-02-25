@@ -44,8 +44,19 @@
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           {{ supplier.created_at }}
         </td>
-        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-          <button @click="openSupplierEditForm(supplier)" class="text-indigo-600 hover:text-indigo-900">Edit</button>
+        <td class="px-6 py-4 whitespace-nowrap font-medium">
+          <button
+            @click="openSupplierEditForm(supplier)"
+            class="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
+          >
+            Edit
+          </button>
+          <button
+            @click="setIsConfirmOpen(supplier)"
+            class="bg-red-500 hover:bg-red-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
+          >
+            Delete
+          </button>
         </td>
       </tr>
     </tbody>
@@ -56,68 +67,122 @@
         Admin Supplier Page
       </h2>
 
-      <button class="" @click="openSupplierAddForm">
-        Add Supplier
-      </button>
+      <button class="" @click="openSupplierAddForm">Add Supplier</button>
     </div>
 
     <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="closeModal" class="relative z-10">
-      <TransitionChild
-        as="template"
-        enter="duration-300 ease-out"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="duration-200 ease-in"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
-        <div class="fixed inset-0 bg-black/25" />
-      </TransitionChild>
-
-      <div class="fixed inset-0 overflow-y-auto">
-        <div
-          class="flex min-h-full items-center justify-center p-4 text-center"
+      <Dialog as="div" @close="closeModal" class="relative z-10">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
         >
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0 scale-95"
-            enter-to="opacity-100 scale-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-95"
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
           >
-            <DialogPanel
-              class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
             >
-              <SupplierForm :addSupplierUtil="addSupplierUtil" :updateSupplierUtil="updateSupplierUtil" :supplier="selectedSupplier" />
-            </DialogPanel>
-          </TransitionChild>
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <SupplierForm
+                  :addSupplierUtil="addSupplierUtil"
+                  :updateSupplierUtil="updateSupplierUtil"
+                  :supplier="selectedSupplier"
+                />
+              </DialogPanel>
+            </TransitionChild>
+          </div>
         </div>
-      </div>
-    </Dialog>
-  </TransitionRoot>
+      </Dialog>
+    </TransitionRoot>
+
+    <TransitionRoot appear :show="isConfirmOpen" as="template">
+      <Dialog as="div" @close="setIsConfirmOpenFalse" class="relative z-10">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <ConfirmModal :message="deleteConfirmMessage" :confirmAction="deleteSupplierUtil" :cancelAction="setIsConfirmOpenFalse" />
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
   </div>
 </template>
 
 <script setup>
-import SupplierForm from '../../components/SupplierForm.vue';
+import SupplierForm from "../../components/SupplierForm.vue";
+import ConfirmModal from "../../components/ConfirmModal.vue";
 import {
   TransitionRoot,
   TransitionChild,
   Dialog,
-  DialogPanel
-} from '@headlessui/vue'
+  DialogPanel,
+} from "@headlessui/vue";
 import { onMounted, computed, ref } from "vue";
 import { useItem } from "../../store/item";
 
 const item = useItem();
 const isOpen = ref(false);
+const isConfirmOpen = ref(false);
 const selectedSupplier = ref(null);
+const deleteConfirmMessage = ref("");
 
 const setIsOpen = (value) => {
   isOpen.value = value;
+};
+
+const setIsConfirmOpen = (supplier) => {
+  isConfirmOpen.value = true;
+  selectedSupplier.value = supplier;
+  deleteConfirmMessage.value = `Are you sure you want to delete ${supplier.name}?`;
+};
+
+const setIsConfirmOpenFalse = () => {
+  isConfirmOpen.value = false;
+  deleteConfirmMessage.value = "";
 };
 
 const closeModal = () => {
@@ -150,6 +215,11 @@ const updateSupplierUtil = async (supplierData) => {
   await item.getSuppliersAction();
 };
 
+const deleteSupplierUtil = async () => {
+  setIsConfirmOpenFalse();
+  await item.deleteSupplier(selectedSupplier.value.id);
+  await item.getSuppliersAction();
+};
 
 onMounted(() => {
   item.getSuppliersAction();
