@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
-from . serializers import CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
+from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
     , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -22,7 +22,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 class ListCustomUsersApiView(ListAPIView):
-    serializer_class = CustomUserSerializer
+    serializer_class = ListCustomUserSerializer
     queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated]
 

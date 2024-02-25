@@ -58,7 +58,7 @@ class ListCustomUserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ('username', 'email', 'id', 'is_staff', 'role', 'is_superuser',)
 
 
 class GroupSerializer(serializers.ModelSerializer):

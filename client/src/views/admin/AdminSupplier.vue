@@ -1,5 +1,5 @@
 <template>
-  <p class="container bg-metal mx-auto">
+  <p class="container bg-primary mx-auto">
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, culpa!
   </p>
   <table class="container mx-auto my-3 divide-y divide-gray-200">
@@ -20,7 +20,7 @@
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
-      <tr v-for="supplier in suppliers" :key="supplier.id">
+      <tr v-for="supplier in getSuppliers" :key="supplier.id">
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
           {{ supplier.id }}
         </td>
@@ -52,24 +52,12 @@ import { onMounted, computed, ref } from "vue";
 import { useItem } from "../../store/item";
 
 const item = useItem();
-const suppliers = ref([]);
 
 const getSuppliers = computed(() => {
-  return item.getSuppliers.value;
+  return item.getSuppliers;
 });
-
-console.log('None ', getSuppliers);
 
 onMounted(() => {
   item.getSuppliersAction();
-  httpClient
-    .get("/suppliers")
-    .then((response) => {
-      suppliers.value = response.data;
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 });
 </script>
