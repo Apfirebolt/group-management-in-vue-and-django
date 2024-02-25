@@ -61,7 +61,6 @@ export const useItem = defineStore("item", {
           headers,
         });
         this.suppliers = response.data;
-        console.log('Supplier data', this.suppliers);
       } catch (error) {
         console.log(error);
         return error
