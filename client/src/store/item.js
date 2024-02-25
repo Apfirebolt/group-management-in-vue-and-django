@@ -32,7 +32,7 @@ export const useItem = defineStore("item", {
         const headers = {
           Authorization: `Bearer ${auth.authData.access}`,
         };
-        const response = await httpClient.post("suppliers", supplierData, {
+        const response = await httpClient.post("suppliers/create", supplierData, {
           headers,
         });
         toast.success("Supplier added!");

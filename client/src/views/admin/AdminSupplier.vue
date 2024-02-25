@@ -55,6 +55,10 @@
       <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
         Admin Supplier Page
       </h2>
+
+      <button class="" @click="openSupplierAddForm">
+        Add Supplier
+      </button>
     </div>
 
     <TransitionRoot appear :show="isOpen" as="template">
@@ -87,28 +91,7 @@
             <DialogPanel
               class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
             >
-              <DialogTitle
-                as="h3"
-                class="text-lg font-medium leading-6 text-gray-900"
-              >
-                Payment successful
-              </DialogTitle>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                  Your payment has been successfully submitted. We’ve sent you
-                  an email with all of the details of your order.
-                </p>
-              </div>
-
-              <div class="mt-4">
-                <button
-                  type="button"
-                  class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  @click="closeModal"
-                >
-                  Got it, thanks!
-                </button>
-              </div>
+              <SupplierForm :addSupplierUtil="addSupplierUtil" :supplier="selectedSupplier" />
             </DialogPanel>
           </TransitionChild>
         </div>
@@ -119,12 +102,12 @@
 </template>
 
 <script setup>
+import SupplierForm from '../../components/SupplierForm.vue';
 import {
   TransitionRoot,
   TransitionChild,
   Dialog,
-  DialogPanel,
-  DialogTitle,
+  DialogPanel
 } from '@headlessui/vue'
 import { onMounted, computed, ref } from "vue";
 import { useItem } from "../../store/item";
@@ -149,6 +132,18 @@ const openSupplierEditForm = (supplier) => {
 const getSuppliers = computed(() => {
   return item.getSuppliers;
 });
+
+const openSupplierAddForm = () => {
+  selectedSupplier.value = null;
+  setIsOpen(true);
+};
+
+const addSupplierUtil = async (supplierData) => {
+  closeModal();
+  await item.addSupplier(supplierData);
+  await item.getSuppliersAction();
+};
+
 
 onMounted(() => {
   item.getSuppliersAction();

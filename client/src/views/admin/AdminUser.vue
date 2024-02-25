@@ -57,6 +57,13 @@
 </template>
   
 <script setup>
+import {
+  TransitionRoot,
+  TransitionChild,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from '@headlessui/vue'
 import { onMounted, computed, ref } from "vue";
 import { useUser } from "../../store/user";
 
