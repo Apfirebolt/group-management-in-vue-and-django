@@ -1,88 +1,236 @@
 <template>
-    <div class="flex flex-col">
-      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th scope="col" class="relative px-6 py-3">
-                    <span class="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="person in people" :key="person.email">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
-                        <img class="h-10 w-10 rounded-full" :src="person.image" alt="" />
-                      </div>
-                      <div class="ml-4">
-                        <div class="text-sm font-medium text-gray-900">
-                          {{ person.name }}
-                        </div>
-                        <div class="text-sm text-gray-500">
-                          {{ person.email }}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{ person.title }}</div>
-                    <div class="text-sm text-gray-500">{{ person.department }}</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                      Active
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ person.role }}
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+  <div class="flex container mx-auto">
+    <div class="flex-1 p-4">
+      <h2 class="text-2xl text-gray-900">
+        Admin Groups Page
+      </h2>
+    </div>
+    <div class="flex-1 text-right py-2">
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        @click="openGroupAddForm"
+      >
+        Add Group
+      </button>
+    </div>
+  </div>
+
+  <table class="container mx-auto my-3 divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          ID
+        </th>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          NAME
+        </th>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          CREATED AT
+        </th>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          ACTIONS
+        </th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr v-for="group in getGroups" :key="group.id">
+        <td
+          class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+        >
+          {{ group.id }}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {{ group.name }}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {{ group.created_at }}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap font-medium">
+          <button
+            @click="openGroupEditForm(group)"
+            class="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
+          >
+            Edit
+          </button>
+          <button
+            @click="setIsConfirmOpen(group)"
+            class="bg-red-500 hover:bg-red-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <TransitionRoot appear :show="isOpen" as="template">
+      <Dialog as="div" @close="closeModal" class="relative z-10">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <SupplierForm
+                  :addSupplierUtil="addGroupUtil"
+                  :updateSupplierUtil="updateGroupUtil"
+                  :supplier="selectedGroup"
+                />
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </div>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  const people = [
-    {
-      name: 'Jane Cooper',
-      title: 'Regional Paradigm Technician',
-      department: 'Optimization',
-      role: 'Admin',
-      email: 'jane.cooper@example.com',
-      image:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60',
-    },
-    // More people...
-  ]
-  
-  export default {
-    setup() {
-      return {
-        people,
-      }
-    },
-  }
-  </script>
+      </Dialog>
+    </TransitionRoot>
+
+    <TransitionRoot appear :show="isConfirmOpen" as="template">
+      <Dialog as="div" @close="setIsConfirmOpenFalse" class="relative z-10">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <ConfirmModal
+                  :message="deleteConfirmMessage"
+                  :confirmAction="deleteGroupUtil"
+                  :cancelAction="setIsConfirmOpenFalse"
+                />
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
+  </div>
+</template>
+
+<script setup>
+import GroupForm from "../../components/GroupForm.vue";
+import ConfirmModal from "../../components/ConfirmModal.vue";
+import {
+  TransitionRoot,
+  TransitionChild,
+  Dialog,
+  DialogPanel,
+} from "@headlessui/vue";
+import { onMounted, computed, ref } from "vue";
+import { useGroup } from "../../store/group";
+
+const group = useGroup();
+const isOpen = ref(false);
+const isConfirmOpen = ref(false);
+const selectedGroup = ref(null);
+const deleteConfirmMessage = ref("");
+
+const setIsOpen = (value) => {
+  isOpen.value = value;
+};
+
+const setIsConfirmOpen = (group) => {
+  isConfirmOpen.value = true;
+  selectedGroup.value = group;
+  deleteConfirmMessage.value = `Are you sure you want to delete ${group.name}?`;
+};
+
+const setIsConfirmOpenFalse = () => {
+  isConfirmOpen.value = false;
+  deleteConfirmMessage.value = "";
+};
+
+const closeModal = () => {
+  setIsOpen(false);
+};
+
+const openSupplierEditForm = (supplier) => {
+  selectedSupplier.value = supplier;
+  setIsOpen(true);
+};
+
+const getGroups = computed(() => {
+  return group.getGroups;
+});
+
+const openSupplierAddForm = () => {
+  selectedSupplier.value = null;
+  setIsOpen(true);
+};
+
+const addGroupUtil = async (groupData) => {
+  closeModal();
+  await group.addGroup(supplierData);
+  await group.getGroupsAction();
+};
+
+const updateGroupUtil = async (groupData) => {
+  closeModal();
+  await group.updateGroup(groupData);
+  await group.getGroupsAction();
+};
+
+const deleteGroupUtil = async () => {
+  setIsConfirmOpenFalse();
+  await group.deleteGroup(selectedGroup.value.id);
+  await group.getGroupsAction();
+};
+
+onMounted(() => {
+  group.getGroupsAction();
+});
+</script>

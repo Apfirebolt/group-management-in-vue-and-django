@@ -1,7 +1,20 @@
 <template>
-  <p class="container bg-primary mx-auto">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, culpa!
-  </p>
+  <div class="flex container mx-auto">
+    <div class="flex-1 p-4">
+      <h2 class="text-2xl text-gray-900">
+        Admin Supplier Page
+      </h2>
+    </div>
+    <div class="flex-1 text-right py-2">
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        @click="openSupplierAddForm"
+      >
+        Add Supplier
+      </button>
+    </div>
+  </div>
+
   <table class="container mx-auto my-3 divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
@@ -62,14 +75,6 @@
     </tbody>
   </table>
   <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-        Admin Supplier Page
-      </h2>
-
-      <button class="" @click="openSupplierAddForm">Add Supplier</button>
-    </div>
-
     <TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div" @close="closeModal" class="relative z-10">
         <TransitionChild
@@ -142,7 +147,11 @@
               <DialogPanel
                 class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
               >
-                <ConfirmModal :message="deleteConfirmMessage" :confirmAction="deleteSupplierUtil" :cancelAction="setIsConfirmOpenFalse" />
+                <ConfirmModal
+                  :message="deleteConfirmMessage"
+                  :confirmAction="deleteSupplierUtil"
+                  :cancelAction="setIsConfirmOpenFalse"
+                />
               </DialogPanel>
             </TransitionChild>
           </div>
