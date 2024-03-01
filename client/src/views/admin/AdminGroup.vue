@@ -143,7 +143,7 @@
 
         <div class="fixed inset-0 overflow-y-auto">
           <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
+            class="flex min-h-full items-center justify-center text-center"
           >
             <TransitionChild
               as="template"
@@ -155,7 +155,7 @@
               leave-to="opacity-0 scale-95"
             >
               <DialogPanel
-                class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
+                class="w-full max-w-md transform overflow-hidden bg-white p-2 text-left align-middle shadow-xl transition-all"
               >
                 <ConfirmModal
                   :message="deleteConfirmMessage"

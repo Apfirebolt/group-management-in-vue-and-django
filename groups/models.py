@@ -8,7 +8,7 @@ class Group(models.Model):
     name = models.CharField("Group Name", max_length=255)
     description = models.TextField("Group Description", blank=True)
     created_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='groups_created')
-    moderator = models.ManyToManyField(AUTH_USER_MODEL, related_name='moderators')
+    moderator = models.ManyToManyField(AUTH_USER_MODEL, related_name='group_moderators', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -22,15 +22,6 @@ class Group(models.Model):
         verbose_name = 'Group'
         verbose_name_plural = 'Groups'
 
-
-
-@receiver(post_save, sender=Group)
-def check_admin(sender, instance, created, **kwargs):
-    if created:
-        instance.moderator.add(instance.created_by)
-        instance.save()
-    else:
-        instance.save()
 
 
 class GroupQueue(models.Model):
@@ -65,6 +56,25 @@ class GroupTask(models.Model):
     
     def __str__(self):
         return self.group.name + ' - ' + self.user.username + ' - ' + self.task
+    
 
+@receiver(post_save, sender=Group)
+def check_admin(sender, instance, created, **kwargs):
+    if created:
+        # create a new group queue
+        group_queue = GroupQueue.objects.create(group=instance, created_by=instance.created_by)
+        group_queue.save()
+        # Check if the user is the admin
+        if instance.created_by.is_superuser:
+            # create a new group task for admin and set status as 'Approved'
+            group_task = GroupTask.objects.create(group_queue=group_queue, user=instance.created_by, status=True)
+            group_task.save()
+        
+        # capture all the moderators and create a group queue for each moderator
+        moderators = instance.moderator.all()
+        for moderator in moderators:
+            # create a new group task for moderator and set status as 'Pending'
+            group_task = GroupTask.objects.create(group_queue=group_queue, user=moderator, status=False)
+            group_task.save()
 
     
