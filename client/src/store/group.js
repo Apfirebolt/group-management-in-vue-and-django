@@ -7,7 +7,7 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const auth = useAuth();
 
-export const useItem = defineStore("item", {
+export const useGroup = defineStore("item", {
   state: () => ({
     group: ref({}),
     groups: ref([]),

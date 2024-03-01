@@ -34,6 +34,12 @@
           scope="col"
           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
         >
+          DESCRIPTION
+        </th>
+        <th
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
           CREATED AT
         </th>
         <th
@@ -53,6 +59,9 @@
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           {{ group.name }}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          {{ group.description }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           {{ group.created_at }}
@@ -105,10 +114,11 @@
               <DialogPanel
                 class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
               >
-                <SupplierForm
-                  :addSupplierUtil="addGroupUtil"
-                  :updateSupplierUtil="updateGroupUtil"
-                  :supplier="selectedGroup"
+                <GroupForm
+                  :users="getUsers"
+                  :addGroupUtil="addGroupUtil"
+                  :updateGroupUtil="updateGroupUtil"
+                  :group="selectedGroup"
                 />
               </DialogPanel>
             </TransitionChild>
@@ -172,8 +182,10 @@ import {
 } from "@headlessui/vue";
 import { onMounted, computed, ref } from "vue";
 import { useGroup } from "../../store/group";
+import { useUser } from "../../store/user";
 
 const group = useGroup();
+const user = useUser();
 const isOpen = ref(false);
 const isConfirmOpen = ref(false);
 const selectedGroup = ref(null);
@@ -189,6 +201,11 @@ const setIsConfirmOpen = (group) => {
   deleteConfirmMessage.value = `Are you sure you want to delete ${group.name}?`;
 };
 
+const openGroupAddForm = () => {
+  selectedGroup.value = null;
+  setIsOpen(true);
+};
+
 const setIsConfirmOpenFalse = () => {
   isConfirmOpen.value = false;
   deleteConfirmMessage.value = "";
@@ -198,8 +215,8 @@ const closeModal = () => {
   setIsOpen(false);
 };
 
-const openSupplierEditForm = (supplier) => {
-  selectedSupplier.value = supplier;
+const openGroupEditForm = (group) => {
+  selectedGroup.value = group;
   setIsOpen(true);
 };
 
@@ -207,14 +224,13 @@ const getGroups = computed(() => {
   return group.getGroups;
 });
 
-const openSupplierAddForm = () => {
-  selectedSupplier.value = null;
-  setIsOpen(true);
-};
+const getUsers = computed(() => {
+  return user.getUsers;
+});
 
 const addGroupUtil = async (groupData) => {
   closeModal();
-  await group.addGroup(supplierData);
+  await group.addGroup(groupData);
   await group.getGroupsAction();
 };
 
@@ -232,5 +248,6 @@ const deleteGroupUtil = async () => {
 
 onMounted(() => {
   group.getGroupsAction();
+  user.getUsersAction();
 });
 </script>
