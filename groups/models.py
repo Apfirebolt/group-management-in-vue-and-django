@@ -33,4 +33,38 @@ def check_admin(sender, instance, created, **kwargs):
         instance.save()
 
 
+class GroupQueue(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='group_queue')
+    created_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='group_queue')
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Group Queue'
+        verbose_name_plural = 'Group Queues'
+    
+    def __str__(self):
+        return self.group.name + ' - ' + self.created_by.username
+
+
+class GroupTask(models.Model):
+    """
+    Multiple tasks can be created for a group queue
+    """
+    group_queue = models.ForeignKey(GroupQueue, on_delete=models.CASCADE, related_name='group_task')
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='group_task')
+    status = models.BooleanField(default=False)
+    comment = models.TextField("Comment", blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Group Task'
+        verbose_name_plural = 'Group Tasks'
+    
+    def __str__(self):
+        return self.group.name + ' - ' + self.user.username + ' - ' + self.task
+
+
     
