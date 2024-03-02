@@ -1,5 +1,5 @@
 <template>
-  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+  <div>
     <h2 class="my-4 bg-gray-100 text-center text-xl font-extrabold p-2 text-gray-900">
       {{ group ? "Update Group" : "Add Group" }}
     </h2>
@@ -81,7 +81,7 @@ const props = defineProps({
   },
   updateGroupUtil: {
     type: Function,
-    required: true,
+    required: false,
   },
 });
 

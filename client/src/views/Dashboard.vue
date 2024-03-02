@@ -66,37 +66,27 @@
                       ]"
                     >
                       {{ tab.name }}
-                </span>
+                    </span>
                   </nav>
-                  <div
-                    class="hidden ml-6 bg-gray-100 p-0.5 rounded-lg items-center sm:flex"
+                  <button
+                    class="bg-blue-500 mb-2 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    @click="openGroupAddForm"
                   >
-                    <button
-                      type="button"
-                      class="p-1.5 rounded-md text-gray-400 hover:bg-white hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-                    >
-                      <ViewListIcon class="h-5 w-5" aria-hidden="true" />
-                      <span class="sr-only">Use list view</span>
-                    </button>
-                    <button
-                      type="button"
-                      class="ml-0.5 bg-white p-1.5 rounded-md shadow-sm text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-                    >
-                      <ViewGridIconSolid class="h-5 w-5" aria-hidden="true" />
-                      <span class="sr-only">Use grid view</span>
-                    </button>
-                  </div>
+                    Add Group
+                  </button>
                 </div>
               </div>
             </div>
 
             <section class="mt-8 pb-16" aria-labelledby="gallery-heading">
-              <TaskTable v-if="selectedTab === 'My Tasks'"
+              <TaskTable
+                v-if="selectedTab === 'My Tasks'"
                 :getGroupTasks="myGroupTasks"
                 :approveTask="approveTaskUtil"
                 :dashboard-view="true"
               />
-              <GroupQueueTable v-if="selectedTab === 'My Groups'"
+              <GroupQueueTable
+                v-if="selectedTab === 'My Groups'"
                 :getGroupQueues="myGroupQueues"
               />
             </section>
@@ -193,7 +183,6 @@
                     Remove<span class="sr-only"> {{ person.name }}</span>
                   </button>
                 </li>
-                
               </ul>
             </div>
             <div class="flex">
@@ -214,17 +203,57 @@
         </aside>
       </div>
     </div>
+    <TransitionRoot appear :show="isOpen" as="template">
+      <Dialog as="div" @close="closeModal" class="relative z-10">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-full max-w-lg transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <GroupForm :users="getUsers" :addGroupUtil="addGroupUtil" />
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from "vue";
-import { useGroup } from "../store/group"
+import { useGroup } from "../store/group";
+import { useUser } from "../store/user";
 import GroupQueueTable from "../components/GroupQueueTable.vue";
 import TaskTable from "../components/TaskTable.vue";
+import GroupForm from "../components/GroupForm.vue";
 
 import {
   Dialog,
+  DialogPanel,
   DialogOverlay,
   Menu,
   MenuButton,
@@ -252,19 +281,6 @@ import {
   ViewGridIcon as ViewGridIconSolid,
   ViewListIcon,
 } from "@heroicons/vue/solid";
-
-const configKonva = {
-  width: 200,
-  height: 200,
-};
-const configCircle = {
-  x: 100,
-  y: 100,
-  radius: 70,
-  fill: "red",
-  stroke: "black",
-  strokeWidth: 4,
-};
 
 const userNavigation = [
   { name: "Your profile", href: "#" },
@@ -333,11 +349,19 @@ export default {
     XIcon,
     GroupQueueTable,
     TaskTable,
+    GroupForm,
+    DialogPanel,
   },
   setup() {
     const mobileMenuOpen = ref(false);
     const group = useGroup();
+    const user = useUser();
     const selectedTab = ref("My Tasks");
+    const isOpen = ref(false);
+
+    const setIsOpen = (value) => {
+      isOpen.value = value;
+    };
 
     const myGroupTasks = computed(() => {
       return group.getGroupTasks;
@@ -347,14 +371,38 @@ export default {
       return group.getGroupQueues;
     });
 
+    const getGroups = computed(() => {
+      return group.getGroups;
+    });
+
+    const getUsers = computed(() => {
+      return user.getUsers;
+    });
+
     const approveTaskUtil = async (payload) => {
       await group.approveTask(payload);
       await group.getMyGroupTasksAction();
     };
 
+    const openGroupAddForm = () => {
+      setIsOpen(true);
+    };
+
+    const closeModal = () => {
+      setIsOpen(false);
+    };
+
+    const addGroupUtil = async (groupData) => {
+      closeModal();
+      await group.addGroup(groupData);
+      await group.getGroupsAction();
+    };
+
     onMounted(() => {
       group.getMyGroupQueuesAction();
       group.getMyGroupTasksAction();
+      group.getGroupsAction();
+      user.getUsersAction();
     });
 
     return {
@@ -363,12 +411,16 @@ export default {
       files,
       currentFile,
       mobileMenuOpen,
-      configKonva,
-      configCircle,
       myGroupQueues,
       myGroupTasks,
       selectedTab,
-      approveTaskUtil
+      approveTaskUtil,
+      getGroups,
+      getUsers,
+      isOpen,
+      openGroupAddForm,
+      addGroupUtil,
+      closeModal,
     };
   },
 };

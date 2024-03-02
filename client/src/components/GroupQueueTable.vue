@@ -1,5 +1,5 @@
 <template>
-    <table class="container mx-auto my-3 divide-y divide-gray-200">
+    <table v-if="getGroupQueues.length" class="container mx-auto my-3 divide-y divide-gray-200">
         <thead class="bg-gray-50">
             <tr>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -44,6 +44,11 @@
             </tr>
         </tbody>
     </table>
+    <div v-else class="text-center text-gray-500">
+        <p>
+            No group queues found
+        </p>
+    </div>
 </template>
 
 <script setup>
