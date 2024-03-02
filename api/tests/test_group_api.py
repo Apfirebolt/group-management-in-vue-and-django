@@ -22,11 +22,26 @@ from api.serializers import (
 
 CREATE_GROUP_URL = reverse('api:create-group')
 GROUP_URL = reverse('api:list-groups')
+GROUP_TASK_URL = reverse('api:list-group-tasks')
 
 
 def detail_group_url(pk):
-    """Create and return a quiz detail URL."""
+    """Create and return a group detail URL."""
     return reverse('api:group-detail', args=[pk])
+
+def detail_group_task_url(pk):
+    """Create and return a group task detail URL."""
+    return reverse('api:update-group-task', args=[pk])
+
+
+def create_group_task(**params):
+    """Create and return a sample Group Task."""
+    return GroupTask.objects.create(**params)
+
+
+def create_group_queue(**params):
+    """Create and return a sample Group Queue."""
+    return GroupQueue.objects.create(**params)
 
 
 def create_group(**params):
@@ -39,7 +54,6 @@ def create_group(**params):
 def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
-
 
 
 class PrivatequestionApiTests(TestCase):
@@ -121,6 +135,145 @@ class PrivatequestionApiTests(TestCase):
         # check if moderator was updated
         self.assertEqual(group.moderator.first().id, sample_user.id)
         self.assertEqual(group.description, payload['description'])
+
+    
+    def test_group_task_creation(self):
+        """Test creating a group task."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        self.assertEqual(group_queue.status, False)
+        group_task = create_group_task(
+            group_queue=group_queue,
+            user=self.user,
+            comment='This is a test comment'
+        )
+        self.assertEqual(group_task.status, False)
+        self.assertEqual(group_task.comment, 'This is a test comment')
+
+    
+    def test_group_update_task(self):
+        """Test updating a group task."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        group_task = create_group_task(
+            group_queue=group_queue,
+            user=self.user,
+            comment='This is a test comment'
+        )
+        payload = {'status': True, 'comment': 'This is an updated test comment'}
+        res = self.client.patch(detail_group_task_url(group_task.id), payload)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        group_task.refresh_from_db()
+        self.assertEqual(group_task.status, payload['status'])
+        self.assertEqual(group_task.comment, payload['comment'])
+
+    
+    def test_group_task_list(self):
+        """Test getting group tasks."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        group_task = create_group_task(
+            group_queue=group_queue,
+            user=self.user,
+            comment='This is a test comment'
+        )
+        res = self.client.get(GROUP_TASK_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        serializer = GroupTaskSerializer(group_task)
+        self.assertEqual(res.data[0], serializer.data)
+
+
+    def test_group_task_detail(self):
+        """Test getting a single group task."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        group_task = create_group_task(
+            group_queue=group_queue,
+            user=self.user,
+            comment='This is a test comment'
+        )
+        res = self.client.get(detail_group_task_url(group_task.id))
+        serializer = GroupTaskSerializer(group_task)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+    
+    def test_update_group_task_user_status_forbidden(self):
+        """Test updating a group task user status."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        group_task = create_group_task(
+            group_queue=group_queue,
+            user=self.user,
+            comment='This is a test comment'
+        )
+        # login with another user
+        sample_user = create_user(
+            email='another_user@gmail.com', password='test123'
+        )
+        self.client.force_authenticate(sample_user)
+        payload = {'status': True}
+        res = self.client.patch(detail_group_task_url(group_task.id), payload)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
+    def test_update_group_task_user_status_approved(self):
+        """Test updating a group task user status."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        group_task = create_group_task(
+            group_queue=group_queue,
+            user=self.user,
+            comment='This is a test comment'
+        )
+        payload = {'status': True}
+        res = self.client.patch(detail_group_task_url(group_task.id), payload)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        group_task.refresh_from_db()
+        self.assertEqual(group_task.status, payload['status'])
+        
 
 
         

@@ -130,6 +130,7 @@ class GroupTaskSerializer(serializers.ModelSerializer):
 
     group_name = serializers.SerializerMethodField()
     user_name = serializers.SerializerMethodField()
+        
 
     class Meta:
         model = GroupTask

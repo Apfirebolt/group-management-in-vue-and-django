@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView
 from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
     , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -190,5 +190,26 @@ class MyGroupQueueApiListView(ListAPIView):
 
     def get_queryset(self):
         return GroupQueue.objects.filter(created_by=self.request.user)
+    
+
+class UpdateGroupTaskApiView(RetrieveUpdateAPIView):
+    serializer_class = GroupTaskSerializer
+    queryset = GroupTask.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        # raise forbidden if user is not the owner of the task
+        group_task = self.get_object()
+        if group_task.user != request.user:
+            return Response(data={"detail": "You are not the owner of this task."}, status=status.HTTP_403_FORBIDDEN)
+        return super().patch(request, *args, **kwargs)
+    
+    
+    
+
+
     
 
