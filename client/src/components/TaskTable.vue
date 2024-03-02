@@ -32,6 +32,13 @@
         >
           CREATED AT
         </th>
+        <th
+          v-if="dashboardView"
+          scope="col"
+          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          ACTIONS
+        </th>
       </tr>
     </thead>
     <tbody class="bg-white divide-y divide-gray-200">
@@ -48,10 +55,29 @@
           {{ groupTask.user_name }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ groupTask.status }}
+          <span class="px-3 py-2 rounded-full text-white font-bold shadow-md" :class="[groupTask.status ? 'bg-green-500' : 'bg-orange-300']">
+            {{ groupTask.status ? 'Approved' : 'Pending'}}
+          </span>
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           {{ groupTask.created_at }}
+        </td>
+        <td
+          v-if="dashboardView"
+          class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+        >
+          <button
+            @click="approveTask({ id: groupTask.id, status: true })"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1"
+          >
+            Approve
+          </button>
+          <button
+            @click="approveTask({ id: groupTask.id, status: false })"
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded m-1"
+          >
+            Delete
+          </button>
         </td>
       </tr>
     </tbody>
@@ -59,11 +85,18 @@
 </template>
 
 <script setup>
-
 const props = defineProps({
-    getGroupTasks: {
-        type: Array,
-        required: true,
-    },
+  getGroupTasks: {
+    type: Array,
+    required: true,
+  },
+  dashboardView: {
+    type: Boolean,
+    required: false,
+  },
+  approveTask: {
+    type: Function,
+    required: false,
+  },
 });
 </script>

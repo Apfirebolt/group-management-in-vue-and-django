@@ -93,6 +93,8 @@
             <section class="mt-8 pb-16" aria-labelledby="gallery-heading">
               <TaskTable v-if="selectedTab === 'My Tasks'"
                 :getGroupTasks="myGroupTasks"
+                :approveTask="approveTaskUtil"
+                :dashboard-view="true"
               />
               <GroupQueueTable v-if="selectedTab === 'My Groups'"
                 :getGroupQueues="myGroupQueues"
@@ -264,14 +266,6 @@ const configCircle = {
   strokeWidth: 4,
 };
 
-const navigation = [
-  { name: "Home", href: "#", icon: HomeIcon, current: false },
-  { name: "All Files", href: "#", icon: ViewGridIconOutline, current: false },
-  { name: "Photos", href: "#", icon: PhotographIcon, current: true },
-  { name: "Shared", href: "#", icon: UserGroupIcon, current: false },
-  { name: "Albums", href: "#", icon: CollectionIcon, current: false },
-  { name: "Settings", href: "#", icon: CogIcon, current: false },
-];
 const userNavigation = [
   { name: "Your profile", href: "#" },
   { name: "Sign out", href: "#" },
@@ -353,13 +347,17 @@ export default {
       return group.getGroupQueues;
     });
 
+    const approveTaskUtil = async (payload) => {
+      await group.approveTask(payload);
+      await group.getMyGroupTasksAction();
+    };
+
     onMounted(() => {
       group.getMyGroupQueuesAction();
       group.getMyGroupTasksAction();
     });
 
     return {
-      navigation,
       userNavigation,
       tabs,
       files,
@@ -369,7 +367,8 @@ export default {
       configCircle,
       myGroupQueues,
       myGroupTasks,
-      selectedTab
+      selectedTab,
+      approveTaskUtil
     };
   },
 };

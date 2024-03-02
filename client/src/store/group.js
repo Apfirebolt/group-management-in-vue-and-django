@@ -150,6 +150,29 @@ export const useGroup = defineStore("item", {
       }
     },
 
+    async approveTask(payload) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.patch("group-tasks/" + payload.id, {
+          status: payload.status,
+        }, {
+          headers,
+        });
+        if (response.status === 200) {
+          if (payload.status) {
+            toast.success("Task approved!");
+          } else {
+            toast.warning("Task rejected!");
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
     async deleteGroup(groupId) {
       try {
         const headers = {

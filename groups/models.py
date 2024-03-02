@@ -2,6 +2,7 @@ from django.db import models
 from group_management.settings import AUTH_USER_MODEL
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from users.models import CustomUser
 
     
 class Group(models.Model):
@@ -76,5 +77,14 @@ def check_admin(sender, instance, created, **kwargs):
             # create a new group task for moderator and set status as 'Pending' if the task was not already created
             group_task = GroupTask.objects.create(group_queue=group_queue, user=moderator, status=False)
             group_task.save()
+
+        # At least one admin needs to approve creation of the group, select all admin users and for each admin user create a group task
+        # with status as 'Pending'
+        admin_users = CustomUser.objects.filter(is_superuser=True)
+        for admin_user in admin_users:
+            group_task = GroupTask.objects.create(group_queue=group_queue, user=admin_user, status=False)
+            group_task.save()
+
+        
 
     
