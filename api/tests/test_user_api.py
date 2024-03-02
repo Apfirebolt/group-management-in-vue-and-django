@@ -10,7 +10,6 @@ from rest_framework import status
 from api.serializers import CustomUserSerializer
 
 CREATE_USER_URL = reverse('api:signup')
-DETAIL_USER_URL = reverse('api:user-detail', args=[1])
 TOKEN_URL = reverse('api:signin')
 USERS_URL = reverse('api:list-users')
 
@@ -18,6 +17,10 @@ USERS_URL = reverse('api:list-users')
 def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
+
+def detail_user_url(pk):
+    """Create and return a group detail URL."""
+    return reverse('api:user-detail', args=[pk])
 
 
 class PublicUserApiTests(TestCase):
@@ -127,7 +130,7 @@ class PublicUserApiTests(TestCase):
     
     def test_retrieve_user_unauthorized(self):
         """Test authentication is required for users."""
-        res = self.client.get(DETAIL_USER_URL)
+        res = self.client.get(detail_user_url(1))
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -140,6 +143,24 @@ class PrivateGroupApiTests(TestCase):
         self.client = APIClient()
         self.user = create_user(email='user@example.com', password='test123', username='Test Name', is_staff=True, is_superuser=True)
         self.client.force_authenticate(self.user)
+
+
+    def test_retrieve_user_success(self):
+        """Test retrieving user is successful."""
+        res = self.client.get(detail_user_url(self.user.id))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        # check if user key is there in the response
+        self.assertIn('user', res.data)
+
+
+    def test_update_user_profile(self):
+        """Test updating the user profile for authenticated user."""
+        payload = {'username': 'newname', 'password': 'newpassword123'}
+        res = self.client.patch(detail_user_url(self.user.id), payload)
+
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, payload['username'])
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     
 

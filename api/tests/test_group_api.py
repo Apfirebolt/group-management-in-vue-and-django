@@ -23,6 +23,7 @@ from api.serializers import (
 CREATE_GROUP_URL = reverse('api:create-group')
 GROUP_URL = reverse('api:list-groups')
 GROUP_TASK_URL = reverse('api:list-group-tasks')
+GROUP_QUEUE_URL = reverse('api:list-group-queue')
 
 
 def detail_group_url(pk):
@@ -273,10 +274,37 @@ class PrivatequestionApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         group_task.refresh_from_db()
         self.assertEqual(group_task.status, payload['status'])
-        
 
 
-        
+    def test_group_queue_creation(self):
+        """Test creating a group queue."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        self.assertEqual(group_queue.group, group)
+        self.assertEqual(group_queue.created_by, self.user)
+        self.assertEqual(group_queue.status, False)
+
+    
+    def test_group_queue_list(self):
+        """Test getting group queues."""
+        group = create_group(
+            name='Test Group',
+            description='This is a test group',
+            created_by=self.user
+        )
+        group_queue = create_group_queue(
+            group=group,
+            created_by=self.user
+        )
+        res = self.client.get(GROUP_QUEUE_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         
 
         
