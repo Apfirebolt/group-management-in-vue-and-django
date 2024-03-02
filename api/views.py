@@ -173,3 +173,22 @@ class ListGroupsQueueApiView(ListAPIView):
     queryset = GroupQueue.objects.all()
     permission_classes = [IsAuthenticated]
 
+
+class MyGroupTasksApiListView(ListAPIView):
+    serializer_class = GroupTaskSerializer
+    model = GroupTask
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return GroupTask.objects.filter(user=self.request.user)
+    
+    
+class MyGroupQueueApiListView(ListAPIView):
+    serializer_class = GroupQueueSerializer
+    model = GroupQueue
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return GroupQueue.objects.filter(created_by=self.request.user)
+    
+

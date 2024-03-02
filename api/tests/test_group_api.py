@@ -59,12 +59,17 @@ class PrivatequestionApiTests(TestCase):
         
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
+        # Test signal on Group Queue creation
+        # group_queue = GroupQueue.objects.get(group=res.data['name'])
+        # print('Group queue:', group_queue)
+
 
     def test_get_groups(self):
         """Test getting groups."""
         res = self.client.get(GROUP_URL)
         
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        
 
     
     def test_delete_group_success(self):

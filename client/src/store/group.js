@@ -105,12 +105,42 @@ export const useGroup = defineStore("item", {
       }
     },
 
+    async getMyGroupTasksAction() {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.get("my-group-tasks", {
+          headers,
+        });
+        this.groupTasks = response.data;
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
     async getGroupQueuesAction() {
       try {
         const headers = {
           Authorization: `Bearer ${auth.authData.access}`,
         };
         const response = await httpClient.get("group-queues", {
+          headers,
+        });
+        this.groupQueues = response.data;
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    async getMyGroupQueuesAction() {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.get("my-group-queues", {
           headers,
         });
         this.groupQueues = response.data;

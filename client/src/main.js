@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import VueKonva from 'vue-konva';
 import './style.css'
 import router from './routes'
 import App from './App.vue'
@@ -9,6 +10,7 @@ import "vue-toastification/dist/index.css";
 const app = createApp(App)
 app.use(router)
 app.use(createPinia())
+app.use(VueKonva)
 app.mount('#app');
 
 const options = {
