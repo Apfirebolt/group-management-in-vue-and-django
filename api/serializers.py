@@ -128,13 +128,43 @@ class CreateSupplierSerializer(serializers.ModelSerializer):
 
 class GroupTaskSerializer(serializers.ModelSerializer):
 
+    group_name = serializers.SerializerMethodField()
+    user_name = serializers.SerializerMethodField()
+
     class Meta:
         model = GroupTask
         fields = '__all__'
 
+    def get_group_name(self, obj):
+        return obj.group_queue.group.name
+    
+    def get_user_name(self, obj):
+        if obj.user.username:
+            return obj.user.username
+        else:
+            return obj.user.email
+
 
 class GroupQueueSerializer(serializers.ModelSerializer):
-    
+
+    group_name = serializers.SerializerMethodField()
+    group_created_by = serializers.SerializerMethodField()
+    tasks = serializers.SerializerMethodField()
+
     class Meta:
         model = GroupQueue
         fields = '__all__'
+
+    def get_group_name(self, obj):
+        return obj.group.name
+    
+    def get_group_created_by(self, obj):
+        if obj.created_by.username:
+            return obj.created_by.username
+        else:
+            return obj.created_by.email
+    
+    def get_tasks(self, obj):
+        tasks = GroupTask.objects.filter(group_queue=obj)
+        return GroupTaskSerializer(tasks, many=True).data
+    

@@ -28,10 +28,13 @@ const responseInterceptor = httpClient.interceptors.response.use(
         return response;
     },
     error => {
-        if (error.response.status === 401 || error.response.status === 403) {
+        if (error.response.status === 403) {
             toast.error('You are not authorized to access this resource');
             router.push('/login');
             useAuth().logout();
+        }
+        else if (error.response.status === 401) {
+            toast.error(error.response.data.detail);
         }
         else if (error.response.status === 404) {
             toast.error('Resource not found');

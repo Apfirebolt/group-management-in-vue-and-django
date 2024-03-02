@@ -56,10 +56,10 @@
             {{ groupTask.id }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ groupTask.group_queue }}
+            {{ groupTask.group_name }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ groupTask.user }}
+            {{ groupTask.user_name }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
             {{ groupTask.status }}
@@ -68,12 +68,6 @@
             {{ groupTask.created_at }}
           </td>
           <td class="px-6 py-4 whitespace-nowrap font-medium">
-            <button
-              @click="openGroupEditForm(groupTask)"
-              class="bg-blue-500 hover:bg-blue-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
-            >
-              Edit
-            </button>
             <button
               @click="setIsConfirmOpen(groupTask)"
               class="bg-red-500 hover:bg-red-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
