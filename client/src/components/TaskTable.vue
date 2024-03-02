@@ -60,7 +60,7 @@
           </span>
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ groupTask.created_at }}
+          {{ formatDate(groupTask.created_at) }}
         </td>
         <td
           v-if="dashboardView"
@@ -85,6 +85,8 @@
 </template>
 
 <script setup>
+import dayjs from 'dayjs';
+
 const props = defineProps({
   getGroupTasks: {
     type: Array,
@@ -99,4 +101,7 @@ const props = defineProps({
     required: false,
   },
 });
+
+const formatDate = (date) => dayjs(date).format('YYYY-MM-DD');
+
 </script>

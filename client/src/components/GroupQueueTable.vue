@@ -31,10 +31,15 @@
                     {{ groupQueue.user_name }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ groupQueue.status }}
+                    <span class="px-3 py-2 rounded-full text-white font-bold shadow-md m-1" :class="[groupQueue.moderator_approved ? 'bg-green-500' : 'bg-orange-300']">
+                        {{ groupQueue.admin_approved ? 'Approved' : 'Pending'}}
+                    </span>
+                    <span class="px-3 py-2 rounded-full text-white font-bold shadow-md m-1" :class="[groupQueue.moderator_approved ? 'bg-green-500' : 'bg-orange-300']">
+                        {{ groupQueue.moderator_approved ? 'Approved' : 'Pending'}}
+                    </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ groupQueue.created_at }}
+                    {{ formatDate(groupQueue.created_at) }}
                 </td>
             </tr>
         </tbody>
@@ -42,10 +47,16 @@
 </template>
 
 <script setup>
+import dayjs from 'dayjs';
+
 const props = defineProps({
     getGroupQueues: {
         type: Array,
         required: true,
     },
 });
+
+const formatDate = (date) => {
+    return dayjs(date).format('MMMM D, YYYY');
+};
 </script>

@@ -151,6 +151,8 @@ class GroupQueueSerializer(serializers.ModelSerializer):
     group_name = serializers.SerializerMethodField()
     group_created_by = serializers.SerializerMethodField()
     tasks = serializers.SerializerMethodField()
+    admin_approved = serializers.BooleanField(default=False)
+    moderator_approved = serializers.BooleanField(default=False)
 
     class Meta:
         model = GroupQueue
@@ -168,4 +170,18 @@ class GroupQueueSerializer(serializers.ModelSerializer):
     def get_tasks(self, obj):
         tasks = GroupTask.objects.filter(group_queue=obj)
         return GroupTaskSerializer(tasks, many=True).data
+    
+    def get_admin_approved(self, obj):
+        # check if any of the tasks in the queue has been approved by the admin
+        for task in obj.group_task_set.all():
+            if task.status:
+                return True
+        return False
+    
+    def get_moderator_approved(self, obj):
+        # check if any of the tasks in the queue has been approved by the moderator
+        for task in obj.group_task_set.all():
+            if not task.user.is_superuser and task.status:
+                return True
+        return False
     
