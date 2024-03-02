@@ -7,77 +7,10 @@
       </div>
     </div>
   
-    <table class="container mx-auto my-3 divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            ID
-          </th>
-          <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            GROUP NAME
-          </th>
-          <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            USER NAME
-          </th>
-          <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            STATUS
-          </th>
-          <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            CREATED AT
-          </th>
-          <th
-            scope="col"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-          >
-            ACTIONS
-          </th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr v-for="groupTask in getGroupTasks" :key="group.id">
-          <td
-            class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-          >
-            {{ groupTask.id }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ groupTask.group_name }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ groupTask.user_name }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ groupTask.status }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ groupTask.created_at }}
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap font-medium">
-            <button
-              @click="setIsConfirmOpen(groupTask)"
-              class="bg-red-500 hover:bg-red-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <TaskTable
+      :getGroupTasks="getGroupTasks"
+      :setIsConfirmOpen="setIsConfirmOpen"
+    />
     <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
   
       <TransitionRoot appear :show="isConfirmOpen" as="template">
@@ -126,6 +59,7 @@
   
   <script setup>
   import ConfirmModal from "../../components/ConfirmModal.vue";
+  import TaskTable from "../../components/TaskTable.vue";
   import {
     TransitionRoot,
     TransitionChild,

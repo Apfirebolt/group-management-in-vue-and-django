@@ -54,20 +54,19 @@
                     class="flex-1 -mb-px flex space-x-6 xl:space-x-8"
                     aria-label="Tabs"
                   >
-                    <a
+                    <span
                       v-for="tab in tabs"
                       :key="tab.name"
-                      :href="tab.href"
+                      @click="selectedTab = tab.name"
                       :aria-current="tab.current ? 'page' : undefined"
                       :class="[
-                        tab.current
+                        selectedTab === tab.name
                           ? 'border-indigo-500 text-indigo-600'
-                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                        'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 cursor-pointer',
                       ]"
                     >
                       {{ tab.name }}
-                    </a>
+                </span>
                   </nav>
                   <div
                     class="hidden ml-6 bg-gray-100 p-0.5 rounded-lg items-center sm:flex"
@@ -91,51 +90,13 @@
               </div>
             </div>
 
-            <!-- Gallery -->
             <section class="mt-8 pb-16" aria-labelledby="gallery-heading">
-              <h2 id="gallery-heading" class="sr-only">Recently viewed</h2>
-              <ul
-                role="list"
-                class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
-              >
-                <li v-for="file in files" :key="file.name" class="relative">
-                  <div
-                    :class="[
-                      file.current
-                        ? 'ring-2 ring-offset-2 ring-indigo-500'
-                        : 'focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500',
-                      'group block w-full aspect-w-10 aspect-h-7 rounded-lg bg-gray-100 overflow-hidden',
-                    ]"
-                  >
-                    <img
-                      :src="file.source"
-                      alt=""
-                      :class="[
-                        file.current ? '' : 'group-hover:opacity-75',
-                        'object-cover pointer-events-none',
-                      ]"
-                    />
-                    <button
-                      type="button"
-                      class="absolute inset-0 focus:outline-none"
-                    >
-                      <span class="sr-only"
-                        >View details for {{ file.name }}</span
-                      >
-                    </button>
-                  </div>
-                  <p
-                    class="mt-2 block text-sm font-medium text-gray-900 truncate pointer-events-none"
-                  >
-                    {{ file.name }}
-                  </p>
-                  <p
-                    class="block text-sm font-medium text-gray-500 pointer-events-none"
-                  >
-                    {{ file.size }}
-                  </p>
-                </li>
-              </ul>
+              <TaskTable v-if="selectedTab === 'My Tasks'"
+                :getGroupTasks="myGroupTasks"
+              />
+              <GroupQueueTable v-if="selectedTab === 'My Groups'"
+                :getGroupQueues="myGroupQueues"
+              />
             </section>
           </div>
         </main>
@@ -257,6 +218,9 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import { useGroup } from "../store/group"
+import GroupQueueTable from "../components/GroupQueueTable.vue";
+import TaskTable from "../components/TaskTable.vue";
+
 import {
   Dialog,
   DialogOverlay,
@@ -313,9 +277,8 @@ const userNavigation = [
   { name: "Sign out", href: "#" },
 ];
 const tabs = [
-  { name: "Recently Viewed", href: "#", current: true },
-  { name: "Recently Added", href: "#", current: false },
-  { name: "Favorited", href: "#", current: false },
+  { name: "My Tasks", current: true },
+  { name: "My Groups", current: false },
 ];
 const files = [
   {
@@ -374,10 +337,13 @@ export default {
     ViewGridIconSolid,
     ViewListIcon,
     XIcon,
+    GroupQueueTable,
+    TaskTable,
   },
   setup() {
     const mobileMenuOpen = ref(false);
     const group = useGroup();
+    const selectedTab = ref("My Tasks");
 
     const myGroupTasks = computed(() => {
       return group.getGroupTasks;
@@ -403,6 +369,7 @@ export default {
       configCircle,
       myGroupQueues,
       myGroupTasks,
+      selectedTab
     };
   },
 };

@@ -4,81 +4,13 @@
       <h2 class="text-2xl text-gray-900">
         Admin Group Queues
       </h2>
-      {{ getGroupQueues }}
     </div>
   </div>
 
-  <table class="container mx-auto my-3 divide-y divide-gray-200">
-    <thead class="bg-gray-50">
-      <tr>
-        <th
-          scope="col"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          ID
-        </th>
-        <th
-          scope="col"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          GROUP NAME
-        </th>
-        <th
-          scope="col"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          USER NAME
-        </th>
-        <th
-          scope="col"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          STATUS
-        </th>
-        <th
-          scope="col"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          CREATED AT
-        </th>
-        <th
-          scope="col"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          ACTIONS
-        </th>
-      </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-200">
-      <tr v-for="groupQueue in getGroupQueues" :key="group.id">
-        <td
-          class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-        >
-          {{ groupQueue.id }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ groupQueue.group_name }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ groupQueue.user_name }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ groupQueue.status }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ groupQueue.created_at }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap font-medium">
-          <button
-            @click="setIsConfirmOpen(groupQueue)"
-            class="bg-red-500 hover:bg-red-700 active:bg-blue-800 px-4 py-2 rounded text-white font-bold mx-1"
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <GroupQueueTable
+    :getGroupQueues="getGroupQueues"
+  />
+  
   <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 
     <TransitionRoot appear :show="isConfirmOpen" as="template">
@@ -127,6 +59,7 @@
 
 <script setup>
 import ConfirmModal from "../../components/ConfirmModal.vue";
+import GroupQueueTable from "../../components/GroupQueueTable.vue";
 import {
   TransitionRoot,
   TransitionChild,
@@ -140,13 +73,6 @@ const group = useGroup();
 const isConfirmOpen = ref(false);
 const selectedGroup = ref(null);
 const deleteConfirmMessage = ref("");
-
-
-const setIsConfirmOpen = (group) => {
-  isConfirmOpen.value = true;
-  selectedGroup.value = group;
-  deleteConfirmMessage.value = `Are you sure you want to delete group Queue ${group.name}?`;
-};
 
 const setIsConfirmOpenFalse = () => {
   isConfirmOpen.value = false;
