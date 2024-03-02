@@ -11,6 +11,8 @@ export const useGroup = defineStore("item", {
   state: () => ({
     group: ref({}),
     groups: ref([]),
+    groupTasks: ref([]),
+    groupQueues: ref([]),
     loading: ref(false),
   }),
 
@@ -20,6 +22,12 @@ export const useGroup = defineStore("item", {
     },
     getGroups() {
       return this.groups;
+    },
+    getGroupTasks() {
+      return this.groupTasks;
+    },
+    getGroupQueues() {
+      return this.groupQueues;
     },
     isLoading() {
       return this.loading;
@@ -79,6 +87,36 @@ export const useGroup = defineStore("item", {
       } catch (error) {
         console.log(error);
         return error
+      }
+    },
+
+    async getGroupTasksAction() {
+      try {
+        const headers = { 
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.get("group-tasks", {
+          headers,
+        });
+        this.groupTasks = response.data;
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    async getGroupQueuesAction() {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.get("group-queues", {
+          headers,
+        });
+        this.groupQueues = response.data;
+      } catch (error) {
+        console.log(error);
+        return error;
       }
     },
 

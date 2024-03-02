@@ -1,12 +1,12 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
-    , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer
+    , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from users.models import CustomUser
-from groups.models import Group
+from groups.models import Group, GroupTask, GroupQueue
 from items.models import Category, Supplier
 
 
@@ -160,4 +160,16 @@ class RetrieveUpdateDestroySupplierApiView(RetrieveUpdateDestroyAPIView):
         supplier = self.get_object()
         supplier.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class ListGroupsTasksApiView(ListAPIView):
+    serializer_class = GroupTaskSerializer
+    queryset = GroupTask.objects.all()
+    permission_classes = [IsAuthenticated]
+
+
+class ListGroupsQueueApiView(ListAPIView):
+    serializer_class = GroupQueueSerializer
+    queryset = GroupQueue.objects.all()
+    permission_classes = [IsAuthenticated]
 

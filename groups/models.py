@@ -36,7 +36,7 @@ class GroupQueue(models.Model):
         verbose_name_plural = 'Group Queues'
     
     def __str__(self):
-        return self.group.name + ' - ' + self.created_by.username
+        return self.group.name + ' - ' + self.created_by.email
 
 
 class GroupTask(models.Model):
@@ -55,7 +55,7 @@ class GroupTask(models.Model):
         verbose_name_plural = 'Group Tasks'
     
     def __str__(self):
-        return self.group.name + ' - ' + self.user.username + ' - ' + self.task
+        return self.group_queue.group.name + ' - ' + self.user.email
     
 
 @receiver(post_save, sender=Group)
@@ -73,7 +73,7 @@ def check_admin(sender, instance, created, **kwargs):
         # capture all the moderators and create a group queue for each moderator
         moderators = instance.moderator.all()
         for moderator in moderators:
-            # create a new group task for moderator and set status as 'Pending'
+            # create a new group task for moderator and set status as 'Pending' if the task was not already created
             group_task = GroupTask.objects.create(group_queue=group_queue, user=moderator, status=False)
             group_task.save()
 

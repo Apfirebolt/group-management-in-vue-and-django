@@ -53,6 +53,16 @@ const routes = [
                 name: 'AdminSuppliers',
                 component: () => import('../views/admin/AdminSupplier.vue')
             },
+            {
+                path: 'group-tasks',
+                name: 'AdminGroupTasks',
+                component: () => import('../views/admin/AdminGroupTask.vue')
+            },
+            {
+                path: 'group-queues',
+                name: 'AdminGroupQueues',
+                component: () => import('../views/admin/AdminGroupQueue.vue')
+            },
         ]
     },
     {

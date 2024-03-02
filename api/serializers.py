@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from users.models import CustomUser
-from groups.models import Group
+from groups.models import Group, GroupQueue, GroupTask
 from items.models import Category, Supplier
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -124,3 +124,17 @@ class CreateSupplierSerializer(serializers.ModelSerializer):
             supplier = super(CreateSupplierSerializer, self).update(instance, validated_data)
             supplier.save()
             return supplier
+        
+
+class GroupTaskSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GroupTask
+        fields = '__all__'
+
+
+class GroupQueueSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = GroupQueue
+        fields = '__all__'

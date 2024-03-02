@@ -1,7 +1,8 @@
 from django.urls import path
 from . views import ListCustomUsersApiView, CreateCustomUserApiView, CustomTokenObtainPairView, CreateGroupApiView, ListGroupsApiView \
 , RetrieveUpdateDestroyCustomUserApiView, RetrieveUpdateDestroyGroupApiView, ListSuppliersApiView \
-, CreateSupplierApiView, RetrieveUpdateDestroySupplierApiView, ListCategoriesApiView, CreateCategoryApiView, RetrieveUpdateDestroyCategoryApiView
+, CreateSupplierApiView, RetrieveUpdateDestroySupplierApiView, ListCategoriesApiView, CreateCategoryApiView, RetrieveUpdateDestroyCategoryApiView \
+, ListGroupsTasksApiView, ListGroupsQueueApiView
 
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -22,4 +23,6 @@ urlpatterns = [
     path('categories', ListCategoriesApiView.as_view(), name='list-categories'),
     path('categories/create', CreateCategoryApiView.as_view(), name='create-category'),
     path('categories/<int:pk>', RetrieveUpdateDestroyCategoryApiView.as_view(), name='category-detail'),
+    path('group-tasks', ListGroupsTasksApiView.as_view(), name='list-group-tasks'),
+    path('group-queues', ListGroupsQueueApiView.as_view(), name='list-group-queue'),
 ]
