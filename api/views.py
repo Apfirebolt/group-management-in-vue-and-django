@@ -41,9 +41,12 @@ class RetrieveUpdateDestroyCustomUserApiView(RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         user = self.get_object()
         serializer = UserDataSerializer(user, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        # if exception is raised then return 400 with a detail message
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
     def delete(self, request, *args, **kwargs):
         user = self.get_object()

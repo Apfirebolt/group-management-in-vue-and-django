@@ -45,7 +45,14 @@ const responseInterceptor = httpClient.interceptors.response.use(
             router.push('/server-error');
         }
         else if (error.response.status === 400) {
-            toast.error('Bad request');
+            console.log(error.response.data);
+            if (error.response.data) {
+            // store the value of the first key in the error object
+            const firstError = Object.keys(error.response.data)[0];
+            toast.error(error.response.data[firstError][0]);
+            } else {
+                toast.error('Bad request');
+            }
         }
         // Do something with response error
         else {

@@ -1,4 +1,11 @@
 <template>
+  <div class="flex container mx-auto">
+      <div class="flex-1 p-4">
+        <h2 class="text-2xl text-gray-900">
+          Admin Users Page
+        </h2>
+      </div>
+    </div>
   <table class="container mx-auto my-3 divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
@@ -30,12 +37,6 @@
           scope="col"
           class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
         >
-          CREATED AT
-        </th>
-        <th
-          scope="col"
-          class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
           ACTIONS
         </th>
       </tr>
@@ -56,9 +57,6 @@
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
           {{ user.role }}
         </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ user.created_at }}
-        </td>
         <td class="px-6 py-4 whitespace-nowrap font-medium">
           <button @click="openUserEditForm(user)" class="text-indigo-600 hover:text-indigo-900">Edit</button>
         </td>
@@ -66,12 +64,6 @@
     </tbody>
   </table>
   <div class="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-        Admin User Page
-      </h2>
-    </div>
-
     <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild

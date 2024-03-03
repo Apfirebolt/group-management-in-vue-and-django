@@ -9,7 +9,7 @@
                     GROUP NAME
                 </th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    USER NAME
+                    REQUESTED BY
                 </th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     STATUS
@@ -28,7 +28,7 @@
                     {{ groupQueue.group_name }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {{ groupQueue.user_name }}
+                    {{ groupQueue.group_created_by }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <span class="px-3 py-2 rounded-full text-white font-bold shadow-md m-1" :class="[groupQueue.admin_approved ? 'bg-green-500' : 'bg-orange-300']">

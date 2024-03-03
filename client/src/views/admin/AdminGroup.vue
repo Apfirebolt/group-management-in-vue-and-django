@@ -64,7 +64,7 @@
           {{ group.description }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {{ group.created_at }}
+          {{ formatDate(group.created_at) }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap font-medium">
           <button
@@ -172,6 +172,7 @@
 </template>
 
 <script setup>
+import dayjs from "dayjs";
 import GroupForm from "../../components/GroupForm.vue";
 import ConfirmModal from "../../components/ConfirmModal.vue";
 import {
@@ -246,8 +247,13 @@ const deleteGroupUtil = async () => {
   await group.getGroupsAction();
 };
 
+const formatDate = (date) => {
+  return dayjs(date).format("YYYY-MM-DD");
+};
+
 onMounted(() => {
   group.getGroupsAction();
   user.getUsersAction();
 });
 </script>
+

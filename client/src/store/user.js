@@ -81,7 +81,9 @@ export const useUser = defineStore("user", {
         const response = await httpClient.put(`users/${userData.id}`, userData, {
           headers,
         });
-        toast.success("User data updated!");
+        if (response.status === 200) {
+          toast.success("User data updated!");
+        }
       } catch (error) {
         console.log(error);
         return error;

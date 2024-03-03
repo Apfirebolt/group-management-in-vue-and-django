@@ -21,6 +21,21 @@
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
               <router-link
+                v-if="authData"
+                v-for="item in authMenu"
+                :key="item.name"
+                :to="{ name: item.name }"
+                :class="[
+                  item.current
+                    ? 'bg-gray-900 text-white'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                  'px-3 py-2 rounded-md text-sm font-medium',
+                ]"
+                :aria-current="item.current ? 'page' : undefined"
+                >{{ item.name }}</router-link
+              >
+              <router-link
+                v-if="!authData"
                 v-for="item in navigation"
                 :key="item.name"
                 :to="{ name: item.name }"
@@ -133,11 +148,15 @@ import { BellIcon, MenuIcon, XIcon } from "@heroicons/vue/outline";
 import { useAuth } from "../store/auth";
 
 const navigation = [
-  { name: "Home", path: "/", current: false },
-  { name: "Dashboard", path: "/dashboard", current: false },
-  { name: "Profile", path: "/profile", current: false },
+  { name: "Home", path: "Home", current: false },
   { name: "Login", path: "/login", current: false },
   { name: "Register", path: "/register", current: false },
+];
+
+const authMenu = [
+  { name: "Home", path: "Home", current: false },
+  { name: "Dashboard", path: "Dashboard", current: false },
+  { name: "Profile", path: "Profile", current: false },
 ];
 
 const adminMenu = [
@@ -182,6 +201,7 @@ export default {
 
     return {
       navigation,
+      authMenu,
       logOutUtil,
       authData,
       adminMenu,
