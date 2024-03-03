@@ -76,6 +76,7 @@ export const useUser = defineStore("user", {
       try {
         const headers = {
           Authorization: `Bearer ${auth.authData.access}`,
+          'Content-Type': 'multipart/form-data',
         };
         const response = await httpClient.put(`users/${userData.id}`, userData, {
           headers,

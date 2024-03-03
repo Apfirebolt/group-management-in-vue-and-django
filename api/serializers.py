@@ -53,11 +53,19 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
+    
 class UserDataSerializer(serializers.ModelSerializer):
+
+    profile_image = serializers.ImageField(max_length=None, use_url=True, required=False)
 
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'id', 'profile_image', 'is_staff', 'role', 'is_superuser',)
+    
+    def validate_profile_image(self, value):
+        if value.size > 2 * 1024 * 1024:
+            raise serializers.ValidationError('Image size should not exceed 1MB')
+        return value
 
 
 class ListCustomUserSerializer(serializers.ModelSerializer):
