@@ -1,7 +1,4 @@
 <template>
-  <p class="container bg-primary mx-auto">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, culpa!
-  </p>
   <table class="container mx-auto my-3 divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
