@@ -80,7 +80,7 @@ export const useUser = defineStore("user", {
         const response = await httpClient.put(`users/${userData.id}`, userData, {
           headers,
         });
-        toast.success("User role updated!");
+        toast.success("User data updated!");
       } catch (error) {
         console.log(error);
         return error;
