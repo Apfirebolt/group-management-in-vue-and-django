@@ -394,8 +394,9 @@ export default {
 
     const addGroupUtil = async (groupData) => {
       closeModal();
-      await group.addGroup(groupData);
-      await group.getGroupsAction();
+      console.log(groupData);
+      // await group.addGroup(groupData);
+      // await group.getMyGroupQueuesAction();
     };
 
     onMounted(() => {

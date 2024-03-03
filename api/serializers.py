@@ -62,6 +62,9 @@ class ListCustomUserSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
+
+    moderator = CustomUserSerializer(many=True)
+
     class Meta:
         model = Group
         fields = '__all__'
@@ -69,10 +72,12 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class CreateGroupSerializer(serializers.ModelSerializer):
 
+    moderator = serializers.PrimaryKeyRelatedField(many=True, queryset=CustomUser.objects.all())
+
     class Meta:
         model = Group
         read_only_fields = ('created_by', 'created_at', 'updated_at')
-        fields = ('name', 'description', 'created_by', 'created_at', 'updated_at')
+        fields = ('name', 'description', 'created_by', 'moderator', 'created_at', 'updated_at')
     
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -151,8 +156,8 @@ class GroupQueueSerializer(serializers.ModelSerializer):
     group_name = serializers.SerializerMethodField()
     group_created_by = serializers.SerializerMethodField()
     tasks = serializers.SerializerMethodField()
-    admin_approved = serializers.BooleanField(default=False)
-    moderator_approved = serializers.BooleanField(default=False)
+    admin_approved = serializers.SerializerMethodField()
+    moderator_approved = serializers.SerializerMethodField()
 
     class Meta:
         model = GroupQueue
@@ -172,16 +177,17 @@ class GroupQueueSerializer(serializers.ModelSerializer):
         return GroupTaskSerializer(tasks, many=True).data
     
     def get_admin_approved(self, obj):
-        # check if any of the tasks in the queue has been approved by the admin
-        for task in obj.group_task_set.all():
-            if task.status:
+        # Return true if at least one task has been approved by the admin
+        for task in obj.group_task.all():
+            if task.status and task.user.is_superuser:
                 return True
         return False
     
     def get_moderator_approved(self, obj):
         # check if any of the tasks in the queue has been approved by the moderator
-        for task in obj.group_task_set.all():
-            if not task.user.is_superuser and task.status:
+        
+        for task in obj.group_task.all():
+            if task.status and not task.user.is_superuser:
                 return True
         return False
     

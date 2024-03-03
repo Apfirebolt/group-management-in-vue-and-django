@@ -1,6 +1,6 @@
 from django.db import models
 from group_management.settings import AUTH_USER_MODEL
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch import receiver
 from users.models import CustomUser
 
@@ -57,11 +57,11 @@ class GroupTask(models.Model):
     
     def __str__(self):
         return self.group_queue.group.name + ' - ' + self.user.email
-    
+        
 
-@receiver(post_save, sender=Group)
-def check_admin(sender, instance, created, **kwargs):
-    if created:
+
+def handle_m2m_change(sender, instance, action, pk_set, **kwargs):
+    if action == "post_add":
         # create a new group queue
         group_queue = GroupQueue.objects.create(group=instance, created_by=instance.created_by)
         group_queue.save()
@@ -72,7 +72,7 @@ def check_admin(sender, instance, created, **kwargs):
             group_task.save()
         
         # capture all the moderators and create a group queue for each moderator
-        moderators = instance.moderator.all()
+        moderators = instance.get_all_moderators()
         for moderator in moderators:
             # create a new group task for moderator and set status as 'Pending' if the task was not already created
             group_task = GroupTask.objects.create(group_queue=group_queue, user=moderator, status=False)
@@ -82,8 +82,14 @@ def check_admin(sender, instance, created, **kwargs):
         # with status as 'Pending'
         admin_users = CustomUser.objects.filter(is_superuser=True)
         for admin_user in admin_users:
+            if admin_user == instance.created_by:
+                continue
             group_task = GroupTask.objects.create(group_queue=group_queue, user=admin_user, status=False)
             group_task.save()
+    
+
+# Connect the signal to the m2m_changed signal of the Group.moderator field
+m2m_changed.connect(handle_m2m_change, sender=Group.moderator.through)
 
         
 

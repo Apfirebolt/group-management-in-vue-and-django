@@ -78,7 +78,7 @@ class RetrieveUpdateDestroyGroupApiView(RetrieveUpdateDestroyAPIView):
     
     def put(self, request, *args, **kwargs):
         group = self.get_object()
-        serializer = GroupSerializer(group, data=request.data, partial=True)
+        serializer = CreateGroupSerializer(group, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

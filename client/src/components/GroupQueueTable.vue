@@ -31,7 +31,7 @@
                     {{ groupQueue.user_name }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span class="px-3 py-2 rounded-full text-white font-bold shadow-md m-1" :class="[groupQueue.moderator_approved ? 'bg-green-500' : 'bg-orange-300']">
+                    <span class="px-3 py-2 rounded-full text-white font-bold shadow-md m-1" :class="[groupQueue.admin_approved ? 'bg-green-500' : 'bg-orange-300']">
                         {{ groupQueue.admin_approved ? 'Approved' : 'Pending'}}
                     </span>
                     <span class="px-3 py-2 rounded-full text-white font-bold shadow-md m-1" :class="[groupQueue.moderator_approved ? 'bg-green-500' : 'bg-orange-300']">
