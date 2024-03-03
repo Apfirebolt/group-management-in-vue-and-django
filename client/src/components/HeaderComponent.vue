@@ -16,16 +16,7 @@
           class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start"
         >
           <div class="flex-shrink-0 flex items-center">
-            <img
-              class="block lg:hidden h-8 w-auto"
-              src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-              alt="Workflow"
-            />
-            <img
-              class="hidden lg:block h-8 w-auto"
-              src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-              alt="Workflow"
-            />
+            <img :src="logo" alt="Logo" class="block w-8 h-8 rounded-full" />
           </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
@@ -80,7 +71,7 @@
               leave-from-class="transform opacity-100 scale-100"
               leave-to-class="transform opacity-0 scale-95"
             >
-              <MenuItems v-if="authData.is_admin"
+              <MenuItems v-if="authData && authData.is_admin"
                 class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
               >
                 <MenuItem v-slot="{ active }" v-for="menu in adminMenu" :key="menu.pathName">
@@ -128,6 +119,7 @@
 <script>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import logo from '../assets/car.jpg';
 import {
   Disclosure,
   DisclosureButton,
@@ -143,6 +135,7 @@ import { useAuth } from "../store/auth";
 const navigation = [
   { name: "Home", path: "/", current: false },
   { name: "Dashboard", path: "/dashboard", current: false },
+  { name: "Profile", path: "/profile", current: false },
   { name: "Login", path: "/login", current: false },
   { name: "Register", path: "/register", current: false },
 ];
@@ -193,7 +186,8 @@ export default {
       authData,
       adminMenu,
       navigateToRoute,
-      adminMenu
+      adminMenu,
+      logo
     };
   },
 };
