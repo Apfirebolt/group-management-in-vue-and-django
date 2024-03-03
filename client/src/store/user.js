@@ -44,8 +44,13 @@ export const useUser = defineStore("user", {
 
     async getUserAction(userId) {
       try {
-        const response = await httpClient.get("user/" + userId);
-        console.log(response);
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.get("users/" + userId, {
+          headers,
+        });
+        this.user = response.data;
       } catch (error) {
         console.log(error);
         

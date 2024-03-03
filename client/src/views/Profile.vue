@@ -97,13 +97,43 @@
               class="mt-2 border-t border-b border-gray-200 divide-y divide-gray-200"
             >
               <div
-                v-for="key in Object.keys(currentFile.information)"
-                :key="key"
                 class="py-3 flex justify-between text-sm font-medium"
               >
-                <dt class="text-gray-500">{{ key }}</dt>
+                <dt class="text-gray-500">
+                  Email
+                </dt>
                 <dd class="text-gray-900">
-                  {{ currentFile.information[key] }}
+                  {{ userData.email }}
+                </dd>
+              </div>
+              <div
+                class="py-3 flex justify-between text-sm font-medium"
+              >
+                <dt class="text-gray-500">
+                  Username
+                </dt>
+                <dd class="text-gray-900">
+                  {{ userData.username }}
+                </dd>
+              </div>
+              <div
+                class="py-3 flex justify-between text-sm font-medium"
+              >
+                <dt class="text-gray-500">
+                  Role
+                </dt>
+                <dd class="text-gray-900">
+                  {{ userData.role }}
+                </dd>
+              </div>
+              <div
+                class="py-3 flex justify-between text-sm font-medium"
+              >
+                <dt class="text-gray-500">
+                  Admin
+                </dt>
+                <dd class="text-gray-900">
+                  {{ userData.is_admin ? "Yes" : "No"}}
                 </dd>
               </div>
             </dl>
@@ -125,33 +155,6 @@
           </div>
           <div>
             <h3 class="font-medium text-gray-900">Shared with</h3>
-            <ul
-              role="list"
-              class="mt-2 border-t border-b border-gray-200 divide-y divide-gray-200"
-            >
-              <li
-                v-for="person in currentFile.sharedWith"
-                :key="person.id"
-                class="py-3 flex justify-between items-center"
-              >
-                <div class="flex items-center">
-                  <img
-                    :src="person.imageUrl"
-                    alt=""
-                    class="w-8 h-8 rounded-full"
-                  />
-                  <p class="ml-4 text-sm font-medium text-gray-900">
-                    {{ person.name }}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  class="ml-6 bg-white rounded-md text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Remove<span class="sr-only"> {{ person.name }}</span>
-                </button>
-              </li>
-            </ul>
           </div>
           <div class="flex">
             <button
@@ -169,17 +172,15 @@
           </div>
         </div>
       </section>
+      {{ userData }}
     </div>
   </main>
 </template>
 
-<script>
+<script setup>
 import { ref, computed, onMounted } from "vue";
-import { useGroup } from "../store/group";
 import { useUser } from "../store/user";
-import GroupQueueTable from "../components/GroupQueueTable.vue";
-import TaskTable from "../components/TaskTable.vue";
-import GroupForm from "../components/GroupForm.vue";
+import { useAuth } from "../store/auth";
 
 import {
   Dialog,
@@ -258,101 +259,23 @@ const currentFile = {
   ],
 };
 
-export default {
-  components: {
-    Dialog,
-    DialogOverlay,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    TransitionChild,
-    TransitionRoot,
-    HeartIcon,
-    MenuAlt2Icon,
-    PencilIcon,
-    PlusSmIconOutline,
-    PlusSmIconSolid,
-    SearchIcon,
-    ViewGridIconSolid,
-    ViewListIcon,
-    XIcon,
-    GroupQueueTable,
-    TaskTable,
-    GroupForm,
-    DialogPanel,
-  },
-  setup() {
-    const mobileMenuOpen = ref(false);
-    const group = useGroup();
-    const user = useUser();
-    const selectedTab = ref("My Tasks");
-    const isOpen = ref(false);
+const mobileMenuOpen = ref(false);
+const auth = useAuth();
+const user = useUser();
+const selectedTab = ref("My Tasks");
+const isOpen = ref(false);
 
-    const setIsOpen = (value) => {
-      isOpen.value = value;
-    };
-
-    const myGroupTasks = computed(() => {
-      return group.getGroupTasks;
-    });
-
-    const myGroupQueues = computed(() => {
-      return group.getGroupQueues;
-    });
-
-    const getGroups = computed(() => {
-      return group.getGroups;
-    });
-
-    const getUsers = computed(() => {
-      return user.getUsers;
-    });
-
-    const approveTaskUtil = async (payload) => {
-      await group.approveTask(payload);
-      await group.getMyGroupTasksAction();
-    };
-
-    const openGroupAddForm = () => {
-      setIsOpen(true);
-    };
-
-    const closeModal = () => {
-      setIsOpen(false);
-    };
-
-    const addGroupUtil = async (groupData) => {
-      closeModal();
-      console.log(groupData);
-      // await group.addGroup(groupData);
-      // await group.getMyGroupQueuesAction();
-    };
-
-    onMounted(() => {
-      group.getMyGroupQueuesAction();
-      group.getMyGroupTasksAction();
-      group.getGroupsAction();
-      user.getUsersAction();
-    });
-
-    return {
-      userNavigation,
-      tabs,
-      files,
-      currentFile,
-      mobileMenuOpen,
-      myGroupQueues,
-      myGroupTasks,
-      selectedTab,
-      approveTaskUtil,
-      getGroups,
-      getUsers,
-      isOpen,
-      openGroupAddForm,
-      addGroupUtil,
-      closeModal,
-    };
-  },
+const setIsOpen = (value) => {
+  isOpen.value = value;
 };
+
+const updateProfileUtil = async (payload) => {
+  console.log(payload)
+};
+
+const userData = computed(() => user.user);
+
+onMounted(() => {
+  user.getUserAction(auth.authData.id)
+});
 </script>

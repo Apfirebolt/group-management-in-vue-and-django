@@ -31,7 +31,7 @@ const routes = [
     {
         path: '/admin',
         name: 'Admin',
-        // beforeEnter: adminAuthGuard,
+        beforeEnter: adminAuthGuard,
         children: [
             {
                 path: '',

@@ -1,6 +1,7 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView
 from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
-    , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer
+    , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer \
+    , UserDataSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -34,9 +35,8 @@ class RetrieveUpdateDestroyCustomUserApiView(RetrieveUpdateDestroyAPIView):
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
-        groups = Group.objects.filter(moderator=user)
-        serializer = CustomUserSerializer(user)
-        return Response({'user': serializer.data, 'groups': groups.values()}, status=status.HTTP_200_OK)
+        serializer = UserDataSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
         user = self.get_object()
