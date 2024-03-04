@@ -12,7 +12,7 @@
         <main class="flex-1 overflow-y-auto">
           <div class="pt-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex">
-              <h1 class="flex-1 text-2xl font-bold text-gray-900">My Dashboard</h1>
+              <h1 class="flex-1 text-2xl font-bold">My Dashboard</h1>
               <div
                 class="ml-6 bg-gray-100 p-0.5 rounded-lg flex items-center sm:hidden"
               >
@@ -278,3 +278,13 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+
+main {
+  h1 {
+    color: $primaryColor;
+  }
+}
+
+</style>
