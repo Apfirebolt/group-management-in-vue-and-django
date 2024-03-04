@@ -28,33 +28,12 @@
         <div class="pb-16 space-y-6">
           <div>
             <div class="flex rounded-lg overflow-hidden">
+              <img v-if="userData.profile_image && !previewImage" :src="appUrl + userData.profile_image" alt="" class="object-cover w-96 h-64 mr-2" />
               <img v-if="previewImage"
                 :src="previewImage"
                 class="object-cover w-96 h-64 mr-2"
               />
-              <img v-else
-                :src="currentFile.source"
-                alt=""
-                class="object-cover w-96 h-64 ml-2"
-              />
-            </div>
-            <div class="mt-4 flex items-start justify-between">
-              <div>
-                <h2 class="text-lg font-medium text-gray-900">
-                  <span class="sr-only">Details for </span
-                  >{{ currentFile.name }}
-                </h2>
-                <p class="text-sm font-medium text-gray-500">
-                  {{ currentFile.size }}
-                </p>
-              </div>
-              <button
-                type="button"
-                class="ml-4 bg-white rounded-full h-8 w-8 flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <HeartIcon class="h-6 w-6" aria-hidden="true" />
-                <span class="sr-only">Favorite</span>
-              </button>
+              
             </div>
           </div>
           <div>
@@ -184,40 +163,13 @@ import {
   ViewListIcon,
 } from "@heroicons/vue/solid";
 
-const currentFile = {
-  name: "IMG_4985.HEIC",
-  size: "3.9 MB",
-  source:
-    "https://images.unsplash.com/photo-1582053433976-25c00369fc93?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&q=80",
-  information: {
-    "Uploaded by": "Marie Culver",
-    Created: "June 8, 2020",
-    "Last modified": "June 8, 2020",
-    Dimensions: "4032 x 3024",
-    Resolution: "72 x 72",
-  },
-  sharedWith: [
-    {
-      id: 1,
-      name: "Aimee Douglas",
-      imageUrl:
-        "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=1024&h=1024&q=80",
-    },
-    {
-      id: 2,
-      name: "Andrea McMillan",
-      imageUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=oilqXxSqey&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    },
-  ],
-};
-
 const mobileMenuOpen = ref(false);
 const auth = useAuth();
 const user = useUser();
 const selectedTab = ref("My Tasks");
 const isOpen = ref(false);
 const previewImage = ref(null);
+const appUrl = import.meta.env.VITE_APP_API_URL
 
 const setIsOpen = (value) => {
   isOpen.value = value;
