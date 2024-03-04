@@ -109,7 +109,6 @@
                   class="w-full max-w-md transform overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all"
                 >
                   <CategoryForm
-                    :users="getUsers"
                     :addCategoryUtil="addCategoryUtil"
                     :updateCategoryUtil="updateCategoryUtil"
                     :category="selectedCategory"
@@ -243,7 +242,6 @@
   
   onMounted(() => {
     item.getCategoriesAction();
-    user.getUsersAction();
   });
   </script>
   

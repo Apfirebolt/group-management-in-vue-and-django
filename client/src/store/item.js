@@ -137,6 +137,21 @@ export const useItem = defineStore("item", {
       }
     },
 
+    async deleteCategory(categoryId) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.delete("categories/" + categoryId, {
+          headers,
+        });
+        toast.success("Category deleted!");
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
     async getCategoryAction(categoryId) {
       try {
         const response = await httpClient.get("category/" + categoryId);
