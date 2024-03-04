@@ -150,7 +150,7 @@ class PrivateGroupApiTests(TestCase):
         res = self.client.get(detail_user_url(self.user.id))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # check if user key is there in the response
-        self.assertIn('user', res.data)
+        self.assertIn('username', res.data)
 
 
     def test_update_user_profile(self):

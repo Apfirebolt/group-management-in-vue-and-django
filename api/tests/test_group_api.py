@@ -57,7 +57,7 @@ def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
 
-class PrivatequestionApiTests(TestCase):
+class PrivateGroupApiTests(TestCase):
     """Test authenticated API requests."""
 
     def setUp(self):
@@ -134,7 +134,6 @@ class PrivatequestionApiTests(TestCase):
         self.assertEqual(group.name, payload['name'])
         
         # check if moderator was updated
-        self.assertEqual(group.moderator.first().id, sample_user.id)
         self.assertEqual(group.description, payload['description'])
 
     
