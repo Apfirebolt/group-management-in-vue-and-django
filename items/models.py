@@ -38,3 +38,28 @@ class Supplier(models.Model):
     class Meta:
         verbose_name = 'Supplier'
         verbose_name_plural = 'Suppliers'
+
+
+class Item(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField("Item Name", max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='items')
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='items')
+    created_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='items_created')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return self.name + ' - ' + self.category.name
+    
+    # overwrite the save method, each time an item is saved, the category and supplier is set to active
+    def save(self, *args, **kwargs):
+        self.category.is_active = True
+        self.category.save()
+        super(Item, self).save(*args, **kwargs)
+    
+    
+    class Meta:
+        verbose_name = 'Item'
+        verbose_name_plural = 'Items'

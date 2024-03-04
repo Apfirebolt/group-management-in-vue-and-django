@@ -166,6 +166,7 @@ const adminMenu = [
   { name: "Admin Suppliers", pathName: "AdminSuppliers", current: false },
   { name: "Admin Tasks", pathName: "AdminGroupTasks", current: false },
   { name: "Admin Queues", pathName: "AdminGroupQueues", current: false },
+  { name: "Admin Categories", pathName: "AdminCategories", current: false },
 ];
 
 export default {

@@ -54,6 +54,11 @@ const routes = [
                 component: () => import('../views/admin/AdminSupplier.vue')
             },
             {
+                path: 'categories',
+                name: 'AdminCategories',
+                component: () => import('../views/admin/AdminCategory.vue')
+            },
+            {
                 path: 'group-tasks',
                 name: 'AdminGroupTasks',
                 component: () => import('../views/admin/AdminGroupTask.vue')

@@ -11,6 +11,8 @@ export const useItem = defineStore("item", {
   state: () => ({
     supplier: ref({}),
     suppliers: ref([]),
+    category: ref({}),
+    categories: ref([]),
     loading: ref(false),
   }),
 
@@ -20,6 +22,12 @@ export const useItem = defineStore("item", {
     },
     getSuppliers() {
       return this.suppliers;
+    },
+    getCategory() {
+      return this.category;
+    },
+    getCategories() {
+      return this.categories;
     },
     isLoading() {
       return this.loading;
@@ -97,9 +105,67 @@ export const useItem = defineStore("item", {
       }
     },
 
-    resetSupplierData() {
+    async addCategory(categoryData) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.post("categories/create", categoryData, {
+          headers,
+        });
+        toast.success("Category added!");
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    async updateCategory(categoryData) {
+      try {
+        const headers = {
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.put(`categories/${categoryData.id}`, categoryData, {
+          headers,
+        });
+        if (response.status === 200) {
+          toast.success("Category updated!");
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    async getCategoryAction(categoryId) {
+      try {
+        const response = await httpClient.get("category/" + categoryId);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async getCategoriesAction(page = 1) {
+      try {
+        const headers = { 
+          Authorization: `Bearer ${auth.authData.access}`,
+        };
+        const response = await httpClient.get("categories?page=" + page, {
+          headers,
+        });
+        this.categories = response.data;
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
+    resetData() {
       this.supplier = {};
       this.suppliers = [];
+      this.category = {};
+      this.categories = [];
     },
   },
 });
