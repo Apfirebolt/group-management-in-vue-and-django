@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView, ListCreateAPIView
 from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
     , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer \
     , UserDataSerializer
@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
+from drf_spectacular.utils import extend_schema
 from users.models import CustomUser
 from groups.models import Group, GroupTask, GroupQueue
 from items.models import Category, Supplier
@@ -92,7 +93,7 @@ class RetrieveUpdateDestroyGroupApiView(RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
-class ListCategoriesApiView(ListAPIView):
+class ListCategoriesApiView(ListCreateAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
     permission_classes = [IsAuthenticated]
@@ -130,16 +131,15 @@ class RetrieveUpdateDestroyCategoryApiView(RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 
-class ListSuppliersApiView(ListAPIView):
+class ListCreateSuppliersApiView(ListCreateAPIView):
     serializer_class = SupplierSerializer
     queryset = Supplier.objects.all()
     permission_classes = []
 
-
-class CreateSupplierApiView(CreateAPIView):
-    serializer_class = CreateSupplierSerializer
-    queryset = Supplier.objects.all()
-    permission_classes = []
+    @extend_schema(responses={200: SupplierSerializer}, description="This is a get request to get list of all suppliers")
+    def get(self, request, *args, **kwargs):
+        print('Inside get request')
+        return super().get(request, *args, **kwargs)
 
 
 class RetrieveUpdateDestroySupplierApiView(RetrieveUpdateDestroyAPIView):

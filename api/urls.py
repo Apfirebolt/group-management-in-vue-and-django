@@ -1,7 +1,7 @@
 from django.urls import path
 from . views import ListCustomUsersApiView, CreateCustomUserApiView, CustomTokenObtainPairView, CreateGroupApiView, ListGroupsApiView \
-, RetrieveUpdateDestroyCustomUserApiView, RetrieveUpdateDestroyGroupApiView, ListSuppliersApiView \
-, CreateSupplierApiView, RetrieveUpdateDestroySupplierApiView, ListCategoriesApiView, CreateCategoryApiView, RetrieveUpdateDestroyCategoryApiView \
+, RetrieveUpdateDestroyCustomUserApiView, RetrieveUpdateDestroyGroupApiView, ListCreateSuppliersApiView \
+, RetrieveUpdateDestroySupplierApiView, ListCategoriesApiView, CreateCategoryApiView, RetrieveUpdateDestroyCategoryApiView \
 , ListGroupsTasksApiView, ListGroupsQueueApiView, MyGroupQueueApiListView, MyGroupTasksApiListView, UpdateGroupTaskApiView
 
 from rest_framework_simplejwt.views import (
@@ -17,8 +17,7 @@ urlpatterns = [
     path('groups/create', CreateGroupApiView.as_view(), name='create-group'),
     path('groups', ListGroupsApiView.as_view(), name='list-groups'),
     path('groups/<int:pk>', RetrieveUpdateDestroyGroupApiView.as_view(), name='group-detail'),
-    path('suppliers', ListSuppliersApiView.as_view(), name='list-suppliers'),
-    path('suppliers/create', CreateSupplierApiView.as_view(), name='create-supplier'),
+    path('suppliers', ListCreateSuppliersApiView.as_view(), name='list-suppliers'),
     path('suppliers/<str:pk>', RetrieveUpdateDestroySupplierApiView.as_view(), name='supplier-detail'),
     path('categories', ListCategoriesApiView.as_view(), name='list-categories'),
     path('categories/create', CreateCategoryApiView.as_view(), name='create-category'),

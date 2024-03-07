@@ -128,21 +128,26 @@ class SupplierSerializer(serializers.ModelSerializer):
 
 class CreateSupplierSerializer(serializers.ModelSerializer):
 
+    nickname = serializers.CharField(max_length=100, required=False, write_only=True)
+    
     class Meta:
         model = Supplier
-        read_only_fields = ('created_at', 'updated_at')
-        fields = ('name', 'created_at', 'updated_at')
+        read_only_fields = ('created_at', 'updated_at',)
+        fields = ('name', 'created_at', 'updated_at', 'nickname')
 
         
-        def create(self, validated_data):
-            supplier = super(CreateSupplierSerializer, self).create(validated_data)
-            supplier.save()
-            return supplier
-        
-        def update(self, instance, validated_data):
-            supplier = super(CreateSupplierSerializer, self).update(instance, validated_data)
-            supplier.save()
-            return supplier
+    def create(self, validated_data):
+        print('Validated data ', validated_data)
+        # pop the nickname from the validated data
+        nickname = validated_data.pop('nickname', None)
+        supplier = super(CreateSupplierSerializer, self).create(validated_data)
+        supplier.save()
+        return supplier
+    
+    def update(self, instance, validated_data):
+        supplier = super(CreateSupplierSerializer, self).update(instance, validated_data)
+        supplier.save()
+        return supplier
         
 
 class GroupTaskSerializer(serializers.ModelSerializer):
