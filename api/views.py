@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView, ListCreateAPIView
 from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
     , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer \
-    , UserDataSerializer
+    , UserDataSerializer, SupplierNameSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -136,11 +136,26 @@ class ListCreateSuppliersApiView(ListCreateAPIView):
     queryset = Supplier.objects.all()
     permission_classes = []
 
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        name = self.request.query_params.get('name')  # Access specific query param
+        if name:
+            queryset = queryset.filter(name__icontains=name)  # Filter by name (case-insensitive)
+        return queryset
+    
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return SupplierNameSerializer
+        return super().get_serializer_class()
+    
+
     @extend_schema(responses={200: SupplierSerializer}, description="This is a get request to get list of all suppliers")
     def get(self, request, *args, **kwargs):
-        print('Inside get request')
         return super().get(request, *args, **kwargs)
-
+    
+        
 
 class RetrieveUpdateDestroySupplierApiView(RetrieveUpdateDestroyAPIView):
     serializer_class = SupplierSerializer

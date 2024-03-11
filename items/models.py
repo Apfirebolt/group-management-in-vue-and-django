@@ -25,6 +25,7 @@ class Category(models.Model):
 class Supplier(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField("Supplier Name", max_length=100)
+    json_data = models.JSONField("Supplier Data", default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)

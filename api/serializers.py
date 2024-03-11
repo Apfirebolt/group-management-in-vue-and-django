@@ -1,9 +1,12 @@
 from rest_framework import serializers
 from users.models import CustomUser
+from django.dispatch import Signal
 from groups.models import Group, GroupQueue, GroupTask
 from items.models import Category, Supplier
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from . handlers import create_supplier_handler
+from . signals import create_supplier_signal
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -125,6 +128,22 @@ class SupplierSerializer(serializers.ModelSerializer):
         model = Supplier
         fields = '__all__'
 
+    def create(self, validated_data):
+        supplier = super(SupplierSerializer, self).create(validated_data)
+        supplier.save()
+    
+        # Send a signal that a new supplier has been created
+        create_supplier_signal.connect(create_supplier_handler, sender=Supplier)
+        create_supplier_signal.send(sender=self.__class__, supplier_instance=supplier)
+        return supplier
+
+
+class SupplierNameSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Supplier
+        fields = ('name', 'json_data')
+
 
 class CreateSupplierSerializer(serializers.ModelSerializer):
 
@@ -142,7 +161,6 @@ class CreateSupplierSerializer(serializers.ModelSerializer):
         nickname = validated_data.pop('nickname', None)
         supplier = super(CreateSupplierSerializer, self).create(validated_data)
         supplier.save()
-        return supplier
     
     def update(self, instance, validated_data):
         supplier = super(CreateSupplierSerializer, self).update(instance, validated_data)

@@ -1,12 +1,17 @@
-# from .models import Supplier
-# from django.dispatch import receiver
-# from django.db.models.signals import post_save, pre_save, post_delete, pre_delete
-# from .models import Supplier
+from .models import Supplier
+from django.dispatch import receiver, Signal
+from django.db.models.signals import post_save, pre_save, post_delete, pre_delete
+from .models import Supplier
+from . handlers import handle_supplier_creation
+
+supplier_created = Signal()
+
+supplier_created.connect(handle_supplier_creation, sender=Supplier)
 
 
 # @receiver(post_save, sender=Supplier)
 # def send_notification(sender, instance, created, **kwargs):
-#     print('Inside signal')
+#     print('Inside signal', instance.name, created, kwargs)
 #     if created:
 #         print('Supplier created', instance.name)
 
