@@ -60,6 +60,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class UserDataSerializer(serializers.ModelSerializer):
 
     profile_image = serializers.ImageField(max_length=None, use_url=True, required=False)
+    # example for related name group created
+    # groups_created = GroupSerializer(many=True, read_only=True)
 
     class Meta:
         model = CustomUser
@@ -98,6 +100,9 @@ class CreateGroupSerializer(serializers.ModelSerializer):
     
 
 class CategorySerializer(serializers.ModelSerializer):
+
+    username = serializers.CharField(source='created_by.email', read_only=True)
+    
     class Meta:
         model = Category
         fields = '__all__'
@@ -142,7 +147,7 @@ class SupplierNameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Supplier
-        fields = ('name', 'json_data')
+        fields = ('name', 'json_data',)
 
 
 class CreateSupplierSerializer(serializers.ModelSerializer):
