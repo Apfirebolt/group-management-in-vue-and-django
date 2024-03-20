@@ -15,7 +15,7 @@ def send_notification(sender, instance, created, **kwargs):
     print('Inside signal', instance.name, created, kwargs)
     if created:
         print('Supplier created', instance.name)
-        logger = logging.getLogger('supplier')
+        logger = logging.getLogger('items')
         logger.info(f"Updating {Supplier}: {instance.id} (Before)")
 
 

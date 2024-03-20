@@ -183,22 +183,27 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',  # Adjust log level as needed (e.g., DEBUG for detailed logs)
+        'items_file': {
+            'level': 'DEBUG',  # Adjust log level as needed
             'class': 'logging.FileHandler',
-            'filename': 'supplier.log',  # Customize filename and location
+            'filename': 'items.log',
+        },
+        'groups_file': {
+            'level': 'INFO',  # Adjust log level as needed
+            'class': 'logging.FileHandler',
+            'filename': 'groups.log',
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',  # Adjust logger level (might be different from handler)
-            'propagate': True,
+        'items': {
+            'handlers': ['items_file'],
+            'level': 'DEBUG',  # Adjust log level as needed
+            'propagate': True,  # Allow messages to propagate to parent loggers
         },
-        'supplier': {  # Replace with your app name
-            'handlers': ['file'],
-            'level': 'INFO',  # Adjust logger level as needed
-            'propagate': True,
+        'groups': {
+            'handlers': ['groups_file'],
+            'level': 'INFO',  # Adjust log level as needed
+            'propagate': True,  # Allow messages to propagate to parent loggers
         },
     },
 }
