@@ -172,6 +172,37 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Logging settings
+
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',  # Adjust log level as needed (e.g., DEBUG for detailed logs)
+            'class': 'logging.FileHandler',
+            'filename': 'supplier.log',  # Customize filename and location
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',  # Adjust logger level (might be different from handler)
+            'propagate': True,
+        },
+        'supplier': {  # Replace with your app name
+            'handlers': ['file'],
+            'level': 'INFO',  # Adjust logger level as needed
+            'propagate': True,
+        },
+    },
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
