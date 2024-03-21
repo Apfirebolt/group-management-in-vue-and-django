@@ -1,6 +1,7 @@
 from django.db import models
 from group_management.settings import AUTH_USER_MODEL
 import uuid
+from simple_history.models import HistoricalRecords
 
 
 class Category(models.Model):
@@ -10,6 +11,7 @@ class Category(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
     
     def __str__(self):
         return self.name
@@ -29,6 +31,7 @@ class Supplier(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
     
     def __str__(self):
         return self.name

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',
+    'simple_history',
 
     'api',
     'users',
@@ -67,6 +68,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    'simple_history.middleware.HistoryRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -174,39 +176,39 @@ USE_TZ = True
 
 # Logging settings
 
-LOGGING = {
-    'version': 1,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'items_file': {
-            'level': 'DEBUG',  # Adjust log level as needed
-            'class': 'logging.FileHandler',
-            'filename': 'items.log',
-        },
-        'groups_file': {
-            'level': 'INFO',  # Adjust log level as needed
-            'class': 'logging.FileHandler',
-            'filename': 'groups.log',
-        },
-    },
-    'loggers': {
-        'items': {
-            'handlers': ['items_file'],
-            'level': 'DEBUG',  # Adjust log level as needed
-            'propagate': True,  # Allow messages to propagate to parent loggers
-        },
-        'groups': {
-            'handlers': ['groups_file'],
-            'level': 'INFO',  # Adjust log level as needed
-            'propagate': True,  # Allow messages to propagate to parent loggers
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'items_file': {
+#             'level': 'DEBUG',  # Adjust log level as needed
+#             'class': 'logging.FileHandler',
+#             'filename': 'items.log',
+#         },
+#         'groups_file': {
+#             'level': 'INFO',  # Adjust log level as needed
+#             'class': 'logging.FileHandler',
+#             'filename': 'groups.log',
+#         },
+#     },
+#     'loggers': {
+#         'items': {
+#             'handlers': ['items_file'],
+#             'level': 'DEBUG',  # Adjust log level as needed
+#             'propagate': True,  # Allow messages to propagate to parent loggers
+#         },
+#         'groups': {
+#             'handlers': ['groups_file'],
+#             'level': 'INFO',  # Adjust log level as needed
+#             'propagate': True,  # Allow messages to propagate to parent loggers
+#         },
+#     },
+# }
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
