@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from group_management.settings import AUTH_USER_MODEL
 
 
 class CustomUserManager(BaseUserManager):
@@ -41,3 +42,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         '''Doc string for meta'''
         verbose_name_plural = "User"
+
+
+class AuditLog(models.Model):
+    model_name = models.CharField(max_length=255)  # Model being audited
+    object_id = models.PositiveIntegerField()  # ID of the audited object
+    action = models.CharField(max_length=50, choices=(  # Action performed
+        ('CREATE', 'Create'),
+        ('UPDATE', 'Update'),
+        ('DELETE', 'Delete'),
+    ))
+    change_data = models.JSONField(blank=True, null=True)  # Detailed changes (optional)
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp of audit entry
+    created_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)  # User who made the change (optional)

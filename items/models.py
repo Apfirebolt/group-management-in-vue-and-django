@@ -32,6 +32,35 @@ class Supplier(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     history = HistoricalRecords()
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.cached_name = self.name
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        
+        # save original values, when model is loaded from database,
+        # in a separate attribute on the model
+        instance._loaded_values = dict(zip(field_names, values))
+        
+        return instance
+
+    def save(self, *args, **kwargs):
+
+        # check if a new db row is being added
+        # When this happens the `_loaded_values` attribute will not be available
+        if not self._state.adding:
+
+            # check if field_1 is being updated
+            if self._loaded_values['name'] != self.name:
+                # do something
+                print('Name was changed', self._loaded_values['name'], self.name)
+
+        super().save(*args, **kwargs)
+        
+    
     
     def __str__(self):
         return self.name
