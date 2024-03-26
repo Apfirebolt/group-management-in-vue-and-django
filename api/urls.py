@@ -2,13 +2,14 @@ from django.urls import path
 from . views import ListCustomUsersApiView, CreateCustomUserApiView, CustomTokenObtainPairView, CreateGroupApiView, ListGroupsApiView \
 , RetrieveUpdateDestroyCustomUserApiView, RetrieveUpdateDestroyGroupApiView, ListCreateSuppliersApiView \
 , RetrieveUpdateDestroySupplierApiView, ListCategoriesApiView, CreateCategoryApiView, RetrieveUpdateDestroyCategoryApiView \
-, ListGroupsTasksApiView, ListGroupsQueueApiView, MyGroupQueueApiListView, MyGroupTasksApiListView, UpdateGroupTaskApiView
+, ListGroupsTasksApiView, ListGroupsQueueApiView, MyGroupQueueApiListView, MyGroupTasksApiListView, UpdateGroupTaskApiView, PasswordlessLoginView
 
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
 urlpatterns = [
+    path('password', PasswordlessLoginView.as_view(), name='passwordless-login'),
     path('register', CreateCustomUserApiView.as_view(), name='signup'),
     path('login', CustomTokenObtainPairView.as_view(), name='signin'),
     path('refresh', TokenRefreshView.as_view(), name='refresh'),

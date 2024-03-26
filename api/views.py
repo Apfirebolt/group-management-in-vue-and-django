@@ -6,11 +6,36 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from users.authentication import EmailLoginBackend
 from drf_spectacular.utils import extend_schema
 from users.models import CustomUser
+from rest_framework_simplejwt.tokens import RefreshToken
 from groups.models import Group, GroupTask, GroupQueue
 from items.models import Category, Supplier
+from rest_framework.views import APIView
 
+
+class PasswordlessLoginView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        username = request.data.get('username')
+        user = self.authenticate(username)
+
+        if user is None:
+            return Response({'error': 'Invalid username'}, status=401)
+
+        token = RefreshToken.for_user(user)
+        refresh = str(token)
+        access = str(token.access_token)
+        email = user.email
+
+        return Response({'refresh': refresh, 'access': access, 'email': email})
+
+    def authenticate(self, username):
+        # Use your custom backend logic here (defined in step 1)
+        return EmailLoginBackend().authenticate(self.request, username)
 
 class CreateCustomUserApiView(CreateAPIView):
     serializer_class = CustomUserSerializer

@@ -10,20 +10,14 @@ supplier_created = Signal()
 supplier_created.connect(handle_supplier_creation, sender=Supplier)
 
 
-@receiver(pre_save, sender=Supplier)
-def store_original_name(sender, instance, **kwargs):
-    """
-    Store the original name of the supplier before saving.
-    """
-    instance._original_name = getattr(instance, 'name', None)  # Handle potential new objects
-    print('Inside pre save', instance._original_name)
-
 @receiver(post_save, sender=Supplier)
 def log_name_change(sender, instance, created, **kwargs):
     """
     Log the change in a Log model if the name has changed.
     """
-    print('Inside post save', instance.name, instance._original_name)
+    print('Inside post save', instance.to_dict, instance._original_name)
+
+
     if not created and hasattr(instance, '_original_name') and instance.name != instance._original_name:
         # Name has changed for an existing object
         old_name = instance._original_name
@@ -33,8 +27,8 @@ def log_name_change(sender, instance, created, **kwargs):
         del instance._original_name  # Cleanup after logging
 
 # Connect the signals to the Supplier model
-pre_save.connect(store_original_name, sender=Supplier)
-post_save.connect(log_name_change, sender=Supplier)
+# pre_save.connect(store_original_name, sender=Supplier)
+# post_save.connect(log_name_change, sender=Supplier)
 
 # @receiver(post_save, sender=Supplier)
 # def send_notification(sender, instance, created, update_fields=None, **kwargs):
