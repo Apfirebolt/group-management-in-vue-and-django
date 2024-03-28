@@ -41,6 +41,24 @@ export const useAuth = defineStore("auth", {
       }
     },
 
+    async refreshToken() {
+      try {
+
+        const response = await httpClient.post("refresh", {
+          refresh: this.authData.refresh,
+        });
+        if (response.data) {
+          // console.log('Refresh token successful!', response.data);
+          this.authData.access = response.data.access;
+          // set the localStorage access token
+          localStorage.setItem("user", JSON.stringify(this.authData));
+        }
+      } catch (error) {
+        console.log(error);
+        return error;
+      }
+    },
+
     async registerAction(registerData) {
       try {
         const response = await httpClient.post("register", registerData);

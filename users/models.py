@@ -55,3 +55,6 @@ class AuditLog(models.Model):
     change_data = models.JSONField(blank=True, null=True)  # Detailed changes (optional)
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp of audit entry
     created_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)  # User who made the change (optional)
+
+    def __str__(self):
+        return f"{self.model_name} {self.action} by {self.created_by.email}"
