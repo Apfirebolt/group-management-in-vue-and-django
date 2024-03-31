@@ -2,6 +2,7 @@ from django.db import models
 from group_management.settings import AUTH_USER_MODEL
 from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch import receiver
+from users.models import AuditLog
 
     
 class Group(models.Model):
@@ -71,6 +72,22 @@ def handle_m2m_change(sender, instance, action, pk_set, **kwargs):
             # create a new group task for moderator and set status as 'Pending' if the task was not already created
             group_task = GroupTask.objects.create(group_queue=group_queue, user=moderator, status=False)
             group_task.save()
+
+
+# audit log for group
+@receiver(post_save, sender=Group)
+def log_group_audit(sender, instance, **kwargs):
+    if kwargs['created']:
+        action = 'CREATE'
+    else:
+        action = 'UPDATE'
+    AuditLog.objects.create(
+        model_name=sender.__name__,
+        object_id=instance.id,
+        action=action,
+        message=f'Group {instance.name} created' if action == 'CREATE' else f'Group {instance.name} updated',
+        created_by=instance.created_by
+    )
     
 
 # Connect the signal to the m2m_changed signal of the Group.moderator field

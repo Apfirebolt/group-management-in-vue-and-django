@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView, ListCreateAPIView
 from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
     , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer \
-    , UserDataSerializer, SupplierNameSerializer
+    , UserDataSerializer, SupplierNameSerializer, AuditLogSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,11 +9,12 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.authentication import EmailLoginBackend
 from drf_spectacular.utils import extend_schema
-from users.models import CustomUser
+from users.models import CustomUser, AuditLog
 from rest_framework_simplejwt.tokens import RefreshToken
 from groups.models import Group, GroupTask, GroupQueue
 from items.models import Category, Supplier
 from rest_framework.views import APIView
+from . permissions import IsOwner, IsSuperUser
 
 
 class PasswordlessLoginView(APIView):
@@ -51,6 +52,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class ListCustomUsersApiView(ListAPIView):
     serializer_class = ListCustomUserSerializer
     queryset = CustomUser.objects.all()
+    # permission_classes = [IsAuthenticated, IsSuperUser]
     permission_classes = [IsAuthenticated]
 
 
@@ -249,6 +251,15 @@ class UpdateGroupTaskApiView(RetrieveUpdateAPIView):
         if group_task.user != request.user:
             return Response(data={"detail": "You are not the owner of this task."}, status=status.HTTP_403_FORBIDDEN)
         return super().patch(request, *args, **kwargs)
+    
+
+class ListAuditLogsApiView(ListAPIView):
+    serializer_class = AuditLogSerializer
+    queryset = AuditLog.objects.all()
+    permission_classes = [IsAuthenticated, IsSuperUser]
+    
+    def get_queryset(self):
+        return AuditLog.objects.filter(created_by=self.request.user)
     
     
     

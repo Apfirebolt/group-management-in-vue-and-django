@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from group_management.settings import AUTH_USER_MODEL
 
 
@@ -52,9 +54,28 @@ class AuditLog(models.Model):
         ('UPDATE', 'Update'),
         ('DELETE', 'Delete'),
     ))
+    message = models.CharField(max_length=100, blank=True, null=True)  # Optional message
     change_data = models.JSONField(blank=True, null=True)  # Detailed changes (optional)
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp of audit entry
     created_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)  # User who made the change (optional)
 
     def __str__(self):
         return f"{self.model_name} {self.action} by {self.created_by.email}"
+    
+
+@receiver(post_save, sender=CustomUser)
+def log_audit(sender, instance, **kwargs):
+    '''Doc string for log_audit'''
+    if kwargs['created']:
+        action = 'CREATE'
+    else:
+        action = 'UPDATE'
+    AuditLog.objects.create(
+        model_name=sender.__name__,
+        object_id=instance.id,
+        action=action,
+        message=f'User {instance.email} created' if action == 'CREATE' else 'User {instance.email} updated',
+        change_data=kwargs['update_fields'],
+        created_by=instance
+    )
+

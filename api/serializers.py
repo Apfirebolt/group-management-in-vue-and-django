@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from users.models import CustomUser
+from users.models import CustomUser, AuditLog
 from django.dispatch import Signal
 from groups.models import Group, GroupQueue, GroupTask
 from items.models import Category, Supplier
@@ -225,3 +225,9 @@ class GroupQueueSerializer(serializers.ModelSerializer):
                 return True
         return False
     
+
+class AuditLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AuditLog
+        fields = '__all__'

@@ -7,7 +7,7 @@ class IsOwner(BasePermission):
     
 
 class IsSuperUser(BasePermission):
+    message = 'This action is restricted to superusers only.'
+
     def has_permission(self, request, view):
-        if request.methods in ['GET', 'HEAD', 'OPTIONS']:
-            return True
         return request.user.is_superuser
