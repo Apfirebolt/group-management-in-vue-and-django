@@ -2,7 +2,6 @@ from django.db import models
 from group_management.settings import AUTH_USER_MODEL
 from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch import receiver
-from users.models import CustomUser
 
     
 class Group(models.Model):
@@ -65,26 +64,12 @@ def handle_m2m_change(sender, instance, action, pk_set, **kwargs):
         # create a new group queue
         group_queue = GroupQueue.objects.create(group=instance, created_by=instance.created_by)
         group_queue.save()
-        # Check if the user is the admin
-        if instance.created_by.is_superuser:
-            # create a new group task for admin and set status as 'Approved'
-            group_task = GroupTask.objects.create(group_queue=group_queue, user=instance.created_by, status=True)
-            group_task.save()
         
         # capture all the moderators and create a group queue for each moderator
         moderators = instance.get_all_moderators()
         for moderator in moderators:
             # create a new group task for moderator and set status as 'Pending' if the task was not already created
             group_task = GroupTask.objects.create(group_queue=group_queue, user=moderator, status=False)
-            group_task.save()
-
-        # At least one admin needs to approve creation of the group, select all admin users and for each admin user create a group task
-        # with status as 'Pending'
-        admin_users = CustomUser.objects.filter(is_superuser=True)
-        for admin_user in admin_users:
-            if admin_user == instance.created_by:
-                continue
-            group_task = GroupTask.objects.create(group_queue=group_queue, user=admin_user, status=False)
             group_task.save()
     
 

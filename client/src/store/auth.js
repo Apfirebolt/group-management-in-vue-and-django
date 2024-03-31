@@ -26,33 +26,44 @@ export const useAuth = defineStore("auth", {
   },
 
   actions: {
+    logout() {
+      this.authData = null;
+      localStorage.removeItem("user");
+      router.push("/login");
+      toast.success("Logout successful!");
+    },
+
     async loginAction(loginData) {
       try {
-        const response = await httpClient.post("login", loginData);
-        if (response.data) {
-          this.authData = response.data;
-          toast.success("Login successful!");
-          localStorage.setItem("user", JSON.stringify(response.data));
-          router.push("/dashboard");
-        }
+        const response = await httpClient
+          .post("login", loginData)
+          .then((response) => {
+            this.authData = response.data;
+            toast.success("Login successful!");
+            localStorage.setItem("user", JSON.stringify(response.data));
+            router.push("/dashboard");
+          });
       } catch (error) {
-        console.log(error);
+        console.log("Inside console error", error);
         return error;
       }
     },
 
     async refreshToken() {
       try {
-
         const response = await httpClient.post("refresh", {
           refresh: this.authData.refresh,
-        });
-        if (response.data) {
+        })
+        .then((response) => {
           // console.log('Refresh token successful!', response.data);
           this.authData.access = response.data.access;
           // set the localStorage access token
           localStorage.setItem("user", JSON.stringify(this.authData));
-        }
+        })
+        .catch((error) => {
+          console.log("Error refreshing token", error);
+          this.logout();
+        });
       } catch (error) {
         console.log(error);
         return error;
@@ -95,18 +106,11 @@ export const useAuth = defineStore("auth", {
           headers,
         });
         this.users = response.data;
-        console.log('User data now inside auth', this.users[0].username);
+        console.log("User data now inside auth", this.users[0].username);
       } catch (error) {
         console.log(error);
-        return error
+        return error;
       }
-    },
-
-    logout() {
-      this.authData = null;
-      localStorage.removeItem("user");
-      router.push("/login");
-      toast.success("Logout successful!");
     },
 
     resetAuth() {

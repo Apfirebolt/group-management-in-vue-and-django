@@ -126,5 +126,5 @@ const [password, passwordAttributes] = defineField("password", {
 const onSubmit = handleSubmit(async (values) => {
   // Submit to API
   await auth.loginAction(values);
-});
+})
 </script>

@@ -10,6 +10,7 @@ const httpClient = axios.create({ baseURL });
 
 let debounceTimer = null;
 let debounceTime = 1000;
+let isRefreshing = false;
 
 const requestInterceptor = httpClient.interceptors.request.use(
   (config) => {
@@ -35,7 +36,13 @@ const responseInterceptor = httpClient.interceptors.response.use(
       useAuth().logout();
     } else if (error.response.status === 401) {
       
-      useAuth().refreshToken();
+      if (!isRefreshing) { 
+        isRefreshing = true;
+        useAuth().refreshToken().then(() => {
+          isRefreshing = false;
+        });
+      }
+      
       if (debounceTimer) {
         clearTimeout(debounceTimer); // Clear pending timer
       }
