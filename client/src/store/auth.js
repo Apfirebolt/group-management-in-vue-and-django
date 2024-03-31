@@ -55,6 +55,10 @@ export const useAuth = defineStore("auth", {
           refresh: this.authData.refresh,
         })
         .then((response) => {
+          if (response.status === 401) {
+            toast.error("Token expired,logging you out! Please login again");
+            this.logout();
+          }
           // console.log('Refresh token successful!', response.data);
           this.authData.access = response.data.access;
           // set the localStorage access token

@@ -35,9 +35,9 @@ const responseInterceptor = httpClient.interceptors.response.use(
       router.push("/login");
       useAuth().logout();
     } else if (error.response.status === 401) {
-      
       if (!isRefreshing) { 
         isRefreshing = true;
+        toast.warning("Token expired, trying to get a new token! Please try again");
         useAuth().refreshToken().then(() => {
           isRefreshing = false;
         });
