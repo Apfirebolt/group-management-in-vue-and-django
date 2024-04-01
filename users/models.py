@@ -75,7 +75,6 @@ def log_audit(sender, instance, **kwargs):
         object_id=instance.id,
         action=action,
         message=f'User {instance.email} created' if action == 'CREATE' else 'User {instance.email} updated',
-        change_data=kwargs['update_fields'],
         created_by=instance
     )
 

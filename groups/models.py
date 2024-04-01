@@ -1,6 +1,6 @@
 from django.db import models
 from group_management.settings import AUTH_USER_MODEL
-from django.db.models.signals import post_save, pre_save, m2m_changed
+from django.db.models.signals import post_save, pre_save, m2m_changed, pre_delete
 from django.dispatch import receiver
 from users.models import AuditLog
 
@@ -88,7 +88,42 @@ def log_group_audit(sender, instance, **kwargs):
         message=f'Group {instance.name} created' if action == 'CREATE' else f'Group {instance.name} updated',
         created_by=instance.created_by
     )
-    
+
+# audit log for group task
+@receiver(post_save, sender=GroupTask)
+def log_group_task_audit(sender, instance, **kwargs):
+    message = ''
+    if kwargs['created']:
+        action = 'CREATE'
+        message = f'Group Task {instance.group_queue.group.name} created by {instance.user.email}'
+    else:
+        action = 'UPDATE'
+        if instance.status:
+            action = 'APPROVED'
+            message = f'Group Task {instance.group_queue.group.name} approved by {instance.user.email}'
+        else:
+            message = f'Group Task {instance.group_queue.group.name} rejected by {instance.user.email}'
+        
+    AuditLog.objects.create(
+        model_name=sender.__name__,
+        object_id=instance.id,
+        action=action,
+        message=message,
+        created_by=instance.user
+    )
+
+# audit log for group delete
+@receiver(pre_delete, sender=Group)
+def log_group_delete_audit(sender, instance, **kwargs):
+    action = 'DELETE'
+    AuditLog.objects.create(
+        model_name=sender.__name__,
+        object_id=instance.id,
+        action=action,
+        message=f'Group {instance.name} deleted by {instance.created_by.email}',
+        created_by=instance.created_by
+    )
+
 
 # Connect the signal to the m2m_changed signal of the Group.moderator field
 m2m_changed.connect(handle_m2m_change, sender=Group.moderator.through)
