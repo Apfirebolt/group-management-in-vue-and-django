@@ -1,5 +1,5 @@
 <template>
-  <table v-if="getGroupTasks.length" class="container mx-auto my-3 divide-y divide-gray-200">
+  <table v-if="getGroupTasks && getGroupTasks.length" class="container mx-auto my-3 divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <tr>
         <th

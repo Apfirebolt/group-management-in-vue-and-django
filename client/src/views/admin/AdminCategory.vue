@@ -15,7 +15,7 @@
       </div>
     </div>
   
-    <table v-if="getCategories.length" class="container mx-auto my-3 divide-y divide-gray-200">
+    <table v-if="getCategories && getCategories.length" class="container mx-auto my-3 divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
           <th
