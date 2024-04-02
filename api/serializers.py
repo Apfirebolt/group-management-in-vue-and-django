@@ -141,6 +141,18 @@ class SupplierSerializer(serializers.ModelSerializer):
         create_supplier_signal.connect(create_supplier_handler, sender=Supplier)
         create_supplier_signal.send(sender=self.__class__, supplier_instance=supplier)
         return supplier
+    
+
+class SupplierViewsetSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Supplier
+        fields = '__all__'
+
+    def create(self, validated_data):
+        supplier = super(SupplierSerializer, self).create(validated_data)
+        supplier.save()
+        return supplier
 
 
 class SupplierNameSerializer(serializers.ModelSerializer):

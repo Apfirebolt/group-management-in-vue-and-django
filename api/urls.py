@@ -2,11 +2,12 @@ from django.urls import path
 from . views import ListCustomUsersApiView, CreateCustomUserApiView, CustomTokenObtainPairView, CreateGroupApiView, ListGroupsApiView \
 , RetrieveUpdateDestroyCustomUserApiView, RetrieveUpdateDestroyGroupApiView, ListCreateSuppliersApiView \
 , RetrieveUpdateDestroySupplierApiView, ListCategoriesApiView, CreateCategoryApiView, RetrieveUpdateDestroyCategoryApiView \
-, ListGroupsTasksApiView, ListGroupsQueueApiView, MyGroupQueueApiListView, MyGroupTasksApiListView, UpdateGroupTaskApiView, PasswordlessLoginView
-
+, ListGroupsTasksApiView, ListGroupsQueueApiView, MyGroupQueueApiListView, MyGroupTasksApiListView, UpdateGroupTaskApiView, PasswordlessLoginView \
+, SupplierViewSet
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
+
 
 urlpatterns = [
     path('password', PasswordlessLoginView.as_view(), name='passwordless-login'),
@@ -20,6 +21,8 @@ urlpatterns = [
     path('groups/<int:pk>', RetrieveUpdateDestroyGroupApiView.as_view(), name='group-detail'),
     path('suppliers', ListCreateSuppliersApiView.as_view(), name='list-suppliers'),
     path('suppliers/<str:pk>', RetrieveUpdateDestroySupplierApiView.as_view(), name='supplier-detail'),
+    path('new-suppliers', SupplierViewSet.as_view({'get': 'list'}), name='suppliers'),
+    path('new-suppliers/<str:pk>', SupplierViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'}), name='suppliers-detail'),
     path('categories', ListCategoriesApiView.as_view(), name='list-categories'),
     path('categories/create', CreateCategoryApiView.as_view(), name='create-category'),
     path('categories/<str:pk>', RetrieveUpdateDestroyCategoryApiView.as_view(), name='category-detail'),

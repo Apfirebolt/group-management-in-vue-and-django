@@ -1,10 +1,11 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveUpdateAPIView, ListCreateAPIView
 from . serializers import ListCustomUserSerializer, CustomUserSerializer, CustomTokenObtainPairSerializer, GroupSerializer, CreateGroupSerializer \
     , CategorySerializer, CreateCategorySerializer, SupplierSerializer, CreateSupplierSerializer, GroupQueueSerializer, GroupTaskSerializer \
-    , UserDataSerializer, SupplierNameSerializer, AuditLogSerializer
+    , UserDataSerializer, SupplierNameSerializer, AuditLogSerializer, SupplierViewsetSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.authentication import EmailLoginBackend
@@ -205,6 +206,16 @@ class RetrieveUpdateDestroySupplierApiView(RetrieveUpdateDestroyAPIView):
         supplier = self.get_object()
         supplier.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class SupplierViewSet(ModelViewSet):
+    serializer_class = SupplierViewsetSerializer
+    queryset = Supplier.objects.all()
+    http_method_names = ['get', 'put', 'patch', 'head', 'options', 'trace', 'delete',]
+    permission_classes = []
+
+    def destroy(self, request, pk=None):
+        return super().destroy(request, pk)
     
 
 class ListGroupsTasksApiView(ListAPIView):
