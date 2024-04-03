@@ -106,6 +106,32 @@ export default defineConfig({
 })
 ```
 
+## Testing 
+
+Front-end testing has been performed using Vitest and other dependencies like happy-dom.
+
+```
+npm install -D vitest
+npm i happy-dom
+```
+
+The vitest configuration file.
+
+```
+import { defineConfig } from 'vitest/config';
+import vue from '@vitejs/plugin-vue';
+
+
+export default defineConfig({
+  plugins: [vue()],
+  test: {
+    testMatch: ['**/*.test.js'],
+    files: 'src/**/*.test.js',
+    extensions: ['js', 'vue'],
+  }
+});
+```
+
 ## Features 
 
 - User Registration
