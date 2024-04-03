@@ -7,24 +7,18 @@ import App from "./App.vue";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
-// import messages from './locales';
+// Import translations
+import en from "./locales/en.json";
+import de from "./locales/de.json";
 
 const messages = {
-  en: {
-    welcome: "Welcome!",
-    home: "Home",
-    about: "About",
-  },
-
-  de: {
-    welcome: "Willkommen!",
-    home: "Startseite",
-    about: "Über uns",
-  },
+    en: en,
+    de: de,
 };
 
 const i18n = createI18n({
-  locale: window.navigator.language || "en", // Set default locale
+  legacy: false,  
+  locale: 'de', // Set default locale
   fallbackLocale: "de", // Fallback to English if translation not found
   messages,
 });
