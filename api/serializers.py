@@ -3,6 +3,8 @@ from users.models import CustomUser, AuditLog
 from django.dispatch import Signal
 from groups.models import Group, GroupQueue, GroupTask
 from items.models import Category, Supplier
+# use @extend_schema_field to add custom description to the field
+from drf_spectacular.utils import extend_schema_field
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from . handlers import create_supplier_handler
@@ -41,10 +43,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('username', 'email', 'id', 'is_staff', 'password', 'access', 'refresh', 'role', 'is_superuser',)
     
+    @extend_schema_field(serializers.CharField)
     def get_refresh(self, user):
         refresh = RefreshToken.for_user(user)
         return str(refresh)
 
+    @extend_schema_field(serializers.CharField)
     def get_access(self, user):
         refresh = RefreshToken.for_user(user)
         access = str(refresh.access_token),
@@ -195,9 +199,11 @@ class GroupTaskSerializer(serializers.ModelSerializer):
         model = GroupTask
         fields = '__all__'
 
+    @extend_schema_field(serializers.CharField)
     def get_group_name(self, obj):
         return obj.group_queue.group.name
     
+    @extend_schema_field(serializers.CharField)
     def get_user_name(self, obj):
         if obj.user.username:
             return obj.user.username
@@ -216,19 +222,23 @@ class GroupQueueSerializer(serializers.ModelSerializer):
         model = GroupQueue
         fields = '__all__'
 
+    @extend_schema_field(serializers.CharField)
     def get_group_name(self, obj):
         return obj.group.name
     
+    @extend_schema_field(serializers.CharField)
     def get_group_created_by(self, obj):
         if obj.created_by.username:
             return obj.created_by.username
         else:
             return obj.created_by.email
     
+    @extend_schema_field(GroupTaskSerializer)
     def get_tasks(self, obj):
         tasks = GroupTask.objects.filter(group_queue=obj)
         return GroupTaskSerializer(tasks, many=True).data
     
+    @extend_schema_field(serializers.BooleanField)
     def get_moderator_approved(self, obj):
         # check if any of the tasks in the queue has been approved by the moderator
         
