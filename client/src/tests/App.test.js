@@ -1,9 +1,16 @@
-import { test, expect } from "vitest";
+import { mount } from "@vue/test-utils";
+import { createPinia, setActivePinia } from "pinia";
+import AppComponent from "../App.vue";
+import { describe, it, beforeEach } from "vitest";
 
-function sum(a, b) {
-  return a + b;
-}
 
-test("add 2 numbers", () => {
-  expect(sum(2,3)).toEqual(5);
+describe("AppComponent", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it('should have a p element with "Group Management Application" text', () => {
+    const wrapper = mount(AppComponent);
+    wrapper.exists();
+  });
 });
