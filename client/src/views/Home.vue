@@ -6,6 +6,8 @@
             </h2>
         </div>
 
+        <h1>{{ $t('welcome') }}</h1>
+
         <div class="mx-auto w-full max-w-xl my-3 rounded-2xl bg-white p-2">
             <Disclosure v-slot="{ open }">
                 <DisclosureButton
